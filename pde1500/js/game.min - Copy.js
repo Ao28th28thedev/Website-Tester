@@ -1,230 +1,196 @@
-const socket = new WebSocket("wss://old-prodigy-servers.onrender.com/");
-
-socket.onopen = function () {
-    console.log("✅ Connected to WebSocket server.");
-    
-    // Request the world list when connected
-    socket.send(JSON.stringify({ action: "getWorldList" }));
-};
-
-socket.onmessage = function (event) {
-    console.log("🌍 World list received:", event.data); 
-    
-    try {
-        const data = JSON.parse(event.data);
-        if (data.action === "worldList") {
-            updateWorldList(data.servers);
-        }
-    } catch (error) {
-        console.error("🚨 Error parsing WebSocket message:", error);
-    }
-};
-
-socket.onerror = function (error) {
-    console.error("❌ WebSocket Error:", error);
-};
-
-socket.onclose = function () {
-    console.log("🔌 WebSocket connection closed.");
-};
-
-// Function to update the world list in the UI
-
-function updateWorldList(servers) {
-    const worldListContainer = document.getElementById("world-list.json"); // Adjust this based on your HTML
-    if (!worldListContainer) return;
-
-    worldListContainer.innerHTML = ""; // Clear the existing list
-    servers.forEach(server => {
-        const worldItem = document.createElement("div");
-        worldItem.className = "world-item";
-        worldItem.innerHTML = `<strong>${server.name}</strong> (${server.status}) - ${server.players} players`;
-        worldListContainer.appendChild(worldItem);
-    });
-}
 function Util() {}
+
+var Util = Util || {};
+if (typeof Util.log === 'undefined') {
+    Util.log = function(...args) { console.log("[Util.log]", ...args); };
+}
+if (typeof Util.error === 'undefined') {
+    Util.error = function(...args) { console.error("[Util.error]", ...args); };
+}
+if (typeof Util.isDefined === 'undefined') {
+    Util.isDefined = function(val) { return typeof val !== 'undefined' && val !== null; };
+}
+// ⭐ PATCH END ⭐
+
+// ... (Your existing function Device() {}) ...
+// ... (Your existing function ApiClient(e, t) { /* ... */ }) ...
+
 
 function Device() {}
 
 function ApiClient(e, t) {
 	function i(e, t) {
-		var i = d[e];
-		t.root = i + c, t.url.leaderboard = i + g, t.url.account = i + u, t.url.multiplayer = p[e], t.url.matchmaking = i + y, t.url.mailer = i + f, t.url.friend = i + m, t.url.events = i + x, t.url.gameTools = i + b, t.url.assignments = i + v, t.url.education = i + w
+		var i = g[e];
+		t.root = "https://prodidows-server.onrender.com/"
 	}
 
 	function a(e, t, i, a, s, r) {
-		void 0 === i && (i = {}), void 0 === r && (r = {}), i["auth-key"] = o.uniqueKey, i.token = o.uniqueKey;
-		var n = {
+		void 0 === i && (i = {}), void 0 === r && (r = {}), i["auth-key"] = l.uniqueKey, i.token = l.uniqueKey;
+		var o = {
 			url: t,
 			data: i,
 			timeout: 3e4,
 			type: e,
 			success: a["200"],
-			crossDomain: !0
+			crossDomain: !0,
+			error: function (e) {
+				"Service Unavailable" === e.responseText && (e.status = 503), void 0 !== a[e.status] ? a[e.status](s, e.status) : l.generic_ajax_error(s, e.status)
+			}
 		};
-		r.ignoreHeaders && (n.headers = null), $.ajax(n)
+		r.ignoreHeaders && (o.headers = null), $.ajax(o)
 	}
 
 	function s(e, t, i, s) {
-		a("post", l.root + l.version + e, t, i, s)
+		"/status" === e ? a("get", c.root + e.substr(1), t, i, s) : a("get", c.root + c.version + e, t, i, s)
 	}
 
-	function r(e, t, i) {
-		for (var a = $.extend({}, h), s = Object.keys(e), r = 0, o = s.length; o > r; ++r) a[s[r]] = e[s[r]];
-		return void 0 !== t ? function e(t, i, a) {
-			for (var s = 0, r = i.length; r > s; ++s)
-				if (void 0 === t[i[s]]) return Util.log("Missing method for " + a + " statusCode: " + i[s], Util.ERROR), !1;
-			return t
-		}(a, t, i) : void 0
+	function r(e, t, i, s) {
+		a("post", c.root + c.version + e, t, i, s)
 	}
-	var o = this,
-		n = {},
-		h = {};
-	this.generic_ajax_error = function() {}, this.uniqueKey = void 0, this.userID = void 0, this.socket = void 0, this.clientVersion = e.clientVersion;
-	var l = {
-			version: "v1",
-			version: "v4",
-			autoping: !0,
-			url: {
-				leaderboard: void 0,
-				multiplayer: void 0,
-				messages: void 0,
-				matchmaking: void 0
-			},
-			ajax_timeout: 3e4,
-			root: void 0
-		},
-		d = {
-			dev: "https://toonigy.github.io/Prodidows-server/public/",
-			staging: "https://www.prodigygame.org/",
-			production: "https://www.prodigygame.com/"
-		},
-		p = {
-			dev: "https://toonigy.github.io/Prodidows-server/public/",
+
+	function o(e, t, i) {
+		for (var a = 0, s = t.length; s > a; ++a)
+			if (void 0 === e[t[a]]) return Util.log("Missing method for " + i + " statusCode: " + t[a], Util.ERROR), !1;
+		return e
+	}
+
+	function n(e, t, i) {
+		for (var a = $.extend({}, p), s = Object.keys(e), r = 0, n = s.length; n > r; ++r) a[s[r]] = e[s[r]];
+		return void 0 !== t ? o(a, t, i) : void 0
+	}
+
+	function h(e) {
+		return "[object Array]" !== Object.prototype.toString.call(e) && (e = [e]), JSON.stringify(e)
+	}
+	var l = this,
+		d = {},
+		p = {};
+	this.generic_ajax_error = function () {}, this.uniqueKey = void 0, this.userID = void 0, this.socket = void 0, this.clientVersion = e.clientVersion;
+var c = {
+    version: "v1",
+    autoping: !0,
+    url: {
+        leaderboard: void 0,
+        multiplayer: void 0,
+        messages: void 0,
+        // ⭐ MODIFIED: Initialize matchmaking and events URLs to proper strings ⭐
+        matchmaking: "", // Initialize as empty string or full base path
+        events: ""       // Initialize as empty string or full base path
+    },
+    ajax_timeout: 3e4,
+    root: void 0
+},
+		// ⭐ MODIFIED: Base URLs for HTTP API to point to your Render server ⭐
+		g = {
+			dev: "https://prodidows-server.onrender.com/",
 			staging: "https://prodidows-server.onrender.com/",
 			production: "https://prodidows-server.onrender.com/"
 		},
-		c = "game-api/",
-		g = "leaderboard-api/",
-		u = "account-api/",
-		y = "matchmaking-api/",
-		m = "friend-api/",
-		f = "game-mailer-api/",
-		b = "game-tools-api/",
-		v = "assignment-api/",
-		w = "education-api/",
-		x = "worlds-api/";
-	switch (window.location.host) {
-		case "dev.prodigygame.org":
-		case "localhost":
-		case "healingmunch.github.io/XPMUser.github.io":
-		case "XPMUser.github.io":
-		case "old-prodigy-servers.onrender.com":
-		default:
-			i("dev", l);
-			break;
-		case "stagingpublic.prodigygame.org":
-		case "www.prodigygame.org":
-		case "prodigygame.org":
-		case "localhost":
-			i("production", l);
-			break;
-		case "healingmunch.github.io/XPMUser.github.io":
-			i("staging", l);
-			break;
-    case "https://triple-bird-410810-default-rtdb.firebaseio.com":
-		case "localhost":
-			i("production", l)
-		case "web.archive.org":
-			i("production", l)
-		case "archive.org":
-			i("production", l)
-		case "old-prodigy-servers.onrender.com":
-			i("production", l)
-		case "healingmunch.github.io/XPMUser.github.io":
-			i("production", l)
-		case "XPMUser.github.io":
-			i("production", l)
-	}
-	var D = window.location.search;
-	if (D.indexOf("env=dev") >= 0 ? i("dev", l) : D.indexOf("env=staging") >= 0 ? i("staging", l) : (D.indexOf("env=production") >= 0 || D.indexOf("env=prod") >= 0) && i("production", l), e)
-		for (var P = Object.keys(l), I = 0, k = P.length; k > I; ++I) void 0 !== e[P[I]] && (l[P[I]] = e[P[I]]);
-	if (n = l, h["500"] = function() {
+		// ⭐ MODIFIED: Base URLs for WebSocket (Socket.IO) API to point to your Render server ⭐
+		u = {
+			dev: "ws://prodidows-server.onrender.com/",
+			staging: "ws://prodidows-server.onrender.com/",
+			production: "ws://prodidows-server.onrender.com/"
+		},
+		y = "game-api/",
+		m = "leaderboard-api/",
+		f = "account-api/",
+		b = "matchmaking-api/",
+		v = "friend-api/",
+		w = "game-mailer-api/",
+		P = "game-tools-api/",
+		x = "assignment-api/",
+		D = "education-api/",
+		I = "events-api/";
+		
+    // ⭐ MODIFIED: Ensure multiplayer URL is explicitly set ⭐
+    c.url.multiplayer = u.production; // Or u.dev/u.staging depending on environment
+    // You might want to adjust this logic if you have different environments
+    // for Socket.IO. For simplicity, setting to 'production' endpoint.
+switch (window.location.host) {
+	case "dev.prodigygame.org":
+	case "localhost":
+		i("dev", c);
+		break;
+
+	case "stagingpublic.prodigygame.org":
+	case "www.prodigygame.org":
+	case "prodigygame.org":
+		i("production", c);
+		break;
+
+        case "Ao28th28.github.io":
+        case "Ao28th28.github.io":
+        case "old-prodigy-servers.onrender.com":
+        case "web.archive.org":
+        case "archive.org":
+        case "triple-bird-410810-default-rtdb.firebaseio.com":
+            // ⭐ MODIFIED: Explicitly point to your server for these hosts ⭐
+            i("production", c); // Now 'production' in 'g' is your Render server
+            c.url.multiplayer = u.production; // Ensure socket.io also points to your Render server
+            break;
+
+        default:
+            i("dev", c); // fallback, will also use your Render server
+            break;
+    }
+
+	var k = window.location.search;
+	if (k.indexOf("env=dev") >= 0 ? i("dev", c) : k.indexOf("env=staging") >= 0 ? i("staging", c) : (k.indexOf("env=production") >= 0 || k.indexOf("env=prod") >= 0) && i("production", c), e)
+		for (var C = Object.keys(c), T = 0, _ = C.length; _ > T; ++T) void 0 !== e[C[T]] && (c[C[T]] = e[C[T]]);
+	if (d = c, p["500"] = function () {
 			Util.log("Something happened with the webservice...", Util.ERROR)
-		}, h["404"] = function() {
+		}, p["404"] = function () {
 			Util.log("The data you are attempting to access does not exist.")
 		}, t)
-		for (var C = Object.keys(t), I = 0, k = C.length; k > I; ++I) void 0 !== t[C[I]] && (h[C[I]] = t[C[I]]);
-// Ensure the multiplayer URL is set correctly
-l.url.multiplayer = "https://toonigy.github.io/Prodidows-server/public/"; // Replace with your actual WebSocket URL
-
-this.joinMultiplayerServer = function(e, t, i, a, s, n, h, d) {
-    var p = r(i, ["200", "503"], "Join multiplayer Server");
-		if (p) {
-			var c = this.userID,
+		for (var E = Object.keys(t), T = 0, _ = E.length; _ > T; ++T) void 0 !== t[E[T]] && (p[E[T]] = t[E[T]]);
+	this.joinMultiplayerServer = function (e, t, i, a, s, r, o, h) {
+		var d = n(i, ["200", "503"], "Join multiplayer Server");
+		if (d) {
+			var p = this.userID,
 				g = this.uniqueKey;
-			if (void 0 == c || void 0 == g) return Util.log("missing user id or token"), !1;
-			var u = !0,
-				y = l.url.multiplayer;
+			if (void 0 == p || void 0 == g) return Util.log("missing user id or token"), !1;
+			var u = !1,
+				y = c.url.multiplayer;
 			/^https:\/\//.test(y) && (u = !0);
-var m = {
-    "force new connection": true, // Ensures a fresh connection every time
-    reconnection: true, // Enables automatic reconnection if disconnected
-    transports: ["websocket", "xhr-polling", "jsonp-polling", "htmlfile"], // Transport fallback options
-    secure: u, // Determines if a secure connection is needed (based on `u`)
-    query: `userId=${c}&worldId=${e}&userToken=${g}&zone=${t}` // Passes user data for connection
-};
-			o.socket = io.connect(l.url.multiplayer, m), o.socket.on("connect", function() {
+			var m = {
+				"force new connection": !0,
+				reconnection: !1,
+				transports: ["websocket", "xhr-polling", "jsonp-polling", "htmlfile"],
+				secure: u,
+				query: "userId=" + p + "&worldId=" + e + "&userToken=" + g + "&zone=" + t
+			};
+			l.socket = io.connect(c.url.multiplayer, m), l.socket.on("connect", function () {
 				Util.log("client connected")
-			}), o.socket.on("connect", p["200"]), o.socket.on("connect_error", function(e) {
+			}), l.socket.on("connect", d["200"]), l.socket.on("connect_error", function (e) {
 				Util.log("connect_error"), Util.log(e, Util.ERROR)
-			}), o.socket.on("error", function(e) {
-				e && Util.log(e, Util.ERROR), e.code && p[e.code] && p[e.code]()
-			}), o.socket.on("connect_error", p["503"]), o.socket.on("message", function(e) {
+			}), l.socket.on("error", function (e) {
+				e && Util.log(e, Util.ERROR), e.code && d[e.code] && d[e.code]()
+			}), l.socket.on("connect_error", d["503"]), l.socket.on("message", function (e) {
 				a(e)
-			}), o.socket.on("playerJoined", function(e) {
-				Util.log("player Joined - playerId: " + e), h(e)
-			}), o.socket.on("playerLeft", function(e) {
-				Util.log("player Left - playerId: " + e), d(e)
-			}), o.socket.on("playerList", function(e) {
+			}), l.socket.on("playerJoined", function (e) {
+				Util.log("player Joined - playerId: " + e), o(e)
+			}), l.socket.on("playerLeft", function (e) {
+				Util.log("player Left - playerId: " + e), h(e)
+			}), l.socket.on("playerList", function (e) {
 				Util.log("player list received"), s(e)
-			}), o.socket.on("disconnect", function() {
-				Util.log("Disconnected from multiplayer server"), n()
+			}), l.socket.on("disconnect", function () {
+				Util.log("Disconnected from multiplayer server"), r()
 			})
 		}
-	}, this.emitMessage = function(e, t) {
-return !!r(t, ["200"], "emit message") && !!o.socket && ( 
-    o.socket.readyState === WebSocket.OPEN 
-        ? (o.socket.send(JSON.stringify({ action: "message", data: e })), !0) 
-        : (console.error("🚨 WebSocket not open. Message not sent."), !1) 
-);
-
-this.getWorldList = function() {
-    const socket = new WebSocket("wss://old-prodigy-servers.onrender.com");
-
-    socket.onopen = () => {
-        console.log("Connected to WebSocket. Requesting world list...");
-        socket.send(JSON.stringify({
-            action: "getWorldList"
-        }));
-    };
-
-    socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log("World list received:", data);
-        
-        // Optionally pass it to `a(...)` or your own handler
-        // a("get", "world-list", {}, data, "getWorldList", { ignoreHeaders: true });
-    };
-
-    socket.onerror = (err) => {
-        console.error("WebSocket error:", err);
-    };
-
-    socket.onclose = () => {
-        console.log("WebSocket closed.");
-    };
-};
+	}, this.emitMessage = function (e, t) {
+		var i = n(t, ["200"], "emit message");
+		return i && l.socket ? (l.socket.emit("message", e), !0) : !1
+	}, this.getWorldList = function (e) {
+		var t = n(e, ["200", "400", "500", "503"], "get world list");
+		if (t) {
+			var i = "v2/worlds",
+				s = c.root + i;
+			return a("get", s, {}, t, "getWorldList", {
+				ignoreHeaders: !0
+			}), !0
+		}
+		return !1
 	}, this.login = function(e, t, i) {
 		var a = r(i, ["200", "401", "404", "426"], "login");
 		if (!o.uniqueKey || !o.userID) {
@@ -328,65 +294,106 @@ this.getWorldList = function() {
 	}, this.saveAnswer = function(e, t) {
 		var i = r(t, ["200"], "save answer");
 		return !!i && (a("post", l.root + "v1/users/" + o.userID + "/answers", e, i, "saveAnswer"), !0)
-	}, this.getLeaderboard = function(e, t, i, s) {
-		var o = r(s, ["200"], "get leaderboard");
-		return !!o && (a("get", l.url.leaderboard + "class/" + e, {
-			sort: t,
-			limit: i
-		}, o, "leaderboard", {
-			ignoreHeaders: !0
-		}), !0)
-	}, this.getPvpLeaderboard = function(e, t, i, s, n) {
-		var h = r(n, ["200"], "get pvp leaderboard");
-		return !!h && (a("get", l.url.leaderboard + "pvp/" + e.min + "/" + e.max, {
-			page: i || 0,
-			limit: s || 30,
-			player_score: t.arenaScore,
-			player_stars: t.stars,
-			userID: o.userID
-		}, h, "leaderboard", {
-			ignoreHeaders: !0
-		}), !0)
-	}, this.reopenMail = function(e, t, i) {
-		var s = r(i, ["200"], "get mail details"),
-			n = {
-				userID: o.userID,
-				type: t
-			};
-		return !!s && (a("get", l.url.mailer + "v1/mail/" + e, n, s, "getMail"), !0)
-	}, this.openMail = function(e, t, i) {
-		var s = r(i, ["200"], "Mark mail as read"),
-			n = {
-				rawData: t,
-				userID: o.userID
-			};
-		return !!s && (a("post", l.url.mailer + "v1/mail/" + e, n, s, "openMail"), !0)
-	}, this.getAllMail = function(e, t, i, a) {}, this.deleteMail = function(e, t) {}, this.getTotalMail = function(e, t) {}, this.getUser = function(e, t, i) {
-		var s = l.root + "v1/characters/" + e;
-		3 === arguments.length ? s += "?fields=" + t.join(",") : i = t;
-		var o = r(i, ["200"], "getUserData");
-		return !!o && (a("get", s, {}, o, "getUser", {
-			ignoreHeaders: !0
-		}), !0)
-	}, this.getUserInfo = function(e, t) {
-		var i, s = r(t, ["200", "401", "404"], "User Info");
-		if (s) {
-			return a("get", l.root + "v1/user/" + e, {
-				sessionToken: o.uniqueKey
-			}, s, "getUserInfo", {
+	}, this.getLeaderboard = function (e, t, i, s) {
+		var r = n(s, ["200"], "get leaderboard");
+		if (r) {
+			var o = c.url.leaderboard;
+			return a("get", l.url.leaderboard + o + "class/" + e, {
+				sort: t,
+				limit: i
+			}, r, "leaderboard", {
 				ignoreHeaders: !0
 			}), !0
 		}
 		return !1
-	}, this.startMatchmaking = function(e, t, i, s) {
-		var n = r(s, ["200"], "startMatchmaking");
-		return !!n && (a("post", l.url.matchmaking + "begin", {
-			userID: o.userID,
-			level: e,
-			score: t,
-			playerData: i,
-			token: o.uniqueKey
-		}, n, "startMatchmaking"), !0)
+	}, this.getLeaderboard = function (e, t, i, s) {
+		var r = n(s, ["200"], "get leaderboard");
+		if (r) {
+			var o = c.url.leaderboard;
+			return a("get", l.url.leaderboard + o + "class/" + e, {
+				sort: t,
+				limit: i
+			}, r, "leaderboard", {
+				ignoreHeaders: !0
+			}), !0
+		}
+		return !1
+	}, this.getPvpLeaderboard = function (e, t, i, s, r) {
+		var o = n(r, ["200"], "get pvp leaderboard");
+		if (o) {
+			var h = c.url.leaderboard;
+			return a("get", l.url.leaderboard + h + "pvp/" + e.min + "/" + e.max, {
+				page: i || 0,
+				limit: s || 30,
+				player_score: t.arenaScore,
+				player_stars: t.stars,
+				userID: l.userID
+			}, o, "leaderboard", {
+				ignoreHeaders: !0
+			}), !0
+		}
+		return !1
+	}, this.reopenMail = function (e, t, i) {
+		var s = n(i, ["200"], "get mail details"),
+			r = {
+				userID: l.userID,
+				type: t
+			};
+		if (s) {
+			var o = c.url.mailer + "v1/mail/" + e;
+			return a("get", o, r, s, "getMail"), !0
+		}
+		return !1
+	}, this.openMail = function (e, t, i) {
+		var s = n(i, ["200"], "Mark mail as read"),
+			r = {
+				rawData: t,
+				userID: l.userID
+			};
+		if (s) {
+			var o = c.url.mailer + "v1/mail/" + e;
+			return a("post", o, r, s, "openMail"), !0
+		}
+		return !1
+	}, this.getAllMail = function (e, t, i, s) {
+		// Wow I removed a function to clean up logs
+	}, this.deleteMail = function (e, t) {
+		// Wow I removed a function to clean up logs
+	}, this.getTotalMail = function (e, t) {
+		// Wow I removed a function to clean up logs
+	}, this.getUser = function (e, t, i) {
+		var s = c.root + "v1/characters/" + e;
+		3 === arguments.length ? s += "?fields=" + t.join(",") : i = t;
+		var r = n(i, ["200"], "getUserData");
+		return r ? (a("get", s, {}, r, "getUser", {
+			ignoreHeaders: !0
+		}), !0) : !1
+	}, this.getUserInfo = function (e, t) {
+		var i = n(t, ["200", "401", "404"], "User Info");
+		if (i) {
+			var s = "v1/user/" + e,
+				r = c.root + s,
+				o = {
+					sessionToken: l.uniqueKey
+				};
+			return a("get", r, o, i, "getUserInfo", {
+				ignoreHeaders: !0
+			}), !0
+		}
+		return !1
+	}, this.startMatchmaking = function (e, t, i, s) {
+		var r = n(s, ["200"], "startMatchmaking");
+		if (r) {
+			var o = c.url.matchmaking + "begin";
+			return a("post", o, {
+				userID: l.userID,
+				level: e,
+				score: t,
+				playerData: i,
+				token: l.uniqueKey
+			}, r, "startMatchmaking"), !0
+		}
+		return !1
 	}, this.quitMatchmaking = function(e) {
 		var t = r(e, ["200"], "quitMatchmaking");
 		return !!t && (a("post", l.url.matchmaking + "end", {
@@ -501,15 +508,16 @@ this.getWorldList = function() {
 		return ["debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"].indexOf(e = e.toLowerCase()) >= 0 && (i.message && (i.attr_message = i.message), i.message = t, s("/log/" + e, i, {
 			200: function() {}
 		}, "log"), !0)
-	}, this.track = function(e, t) {
-		var i = r(t, ["200"], "trackEvent");
+	}, this.track = function (e, t) {
+		var i = n(t, ["200"], "trackEvent");
 		if (i) {
 			var s = {
-				userID: o.userID,
-				token: o.uniqueKey,
-				event: e
-			};
-			return a("post", l.url.events + "world-list.json", s, i, "trackEvent"), !0
+					userID: l.userID,
+					token: l.uniqueKey,
+					event: e
+				},
+				r = "game-event";
+			return a("post", r, s, i, "trackEvent"), !0
 		}
 		return !1
 	}, this.completeAssignment = function(e, t) {
@@ -1577,13 +1585,13 @@ Util.capitalize = function(e) {
 		},
 		core: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/v1/atlases/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/v1/atlases/",
 			key: "general-core",
 			v: "3"
 		},
 		630: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/v1/atlases/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/v1/atlases/",
 			key: "general-core",
 			v: "1"
 		},
@@ -1594,13 +1602,13 @@ Util.capitalize = function(e) {
 		},
 		heads: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/",
 			key: "general-head",
 			v: "1"
 		},
 		icons: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/",
 			key: "general-icons",
 			v: "42"
 		},
@@ -1627,13 +1635,13 @@ Util.capitalize = function(e) {
 		},
 		login: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pdenot1.50.0/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pdenot1.50.0/assets/images/",
 			key: "general-login",
 			v: "4"
 		},
 		map: {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/images/",
 			key: "general-map",
 			v: "6"
 		},
@@ -1889,7 +1897,7 @@ Util.capitalize = function(e) {
 		},
 		"npc-sprite-flora": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pdenot1.50.0/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pdenot1.50.0/assets/images/",
 			key: "npc-sprite-flora",
 			v: "3"
 		},
@@ -1907,7 +1915,7 @@ Util.capitalize = function(e) {
 		},
 		"npc-sprite-howard_cornelius": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/",
 			key: "npc-sprite-howard-cornelius",
 			v: "1"
 		},
@@ -1955,7 +1963,7 @@ Util.capitalize = function(e) {
 		},
 		"npc-sprite-noot": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/v1/atlases/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/v1/atlases/",
 			key: "npc-sprite-guard",
 			v: "1"
 		},
@@ -2134,13 +2142,13 @@ Util.capitalize = function(e) {
 		},
 		"zone-forest2": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/1-11-0/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/1-11-0/assets/images/zones/",
 			url: "zone-forest.png",
 			json: "zone-forest.json"
 		},
 		"zone-docks": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/prodigyde/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/prodigyde/assets/images/zones/",
 			url: "zone-docks.png",
 			json: "zone-docks.json"
 		},
@@ -2152,7 +2160,7 @@ Util.capitalize = function(e) {
 		},
 		"zone-lamplight": {
 			type: "localAtlas",
-			base: "https://ao28th28.github.io/oldprodigy/pde1500/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/images/",
 			key: "zone-lamplight",
 			v: "5"
 		},
@@ -2170,19 +2178,19 @@ Util.capitalize = function(e) {
 		},
 		"zone-townsquare": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/",
 			key: "zone-townsquare",
 			v: "1"
 		},
 		"zone-academy": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pdenot1.50.0/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pdenot1.50.0/assets/images/",
 			key: "zone-academy",
 			v: "1"
 		},
 		"zone-icecave": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/prodigyde/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/prodigyde/assets/images/zones/",
 			key: "zone-icecave",
 			v: "1"
 		},
@@ -2236,7 +2244,7 @@ Util.capitalize = function(e) {
 		},
 		"popup-member-modular": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/images/",
 			key: "popup-member-modular",
 			v: "6"
 		},
@@ -2538,7 +2546,7 @@ Util.capitalize = function(e) {
 		},
 		"tileset-minecarts": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/v1/tilesets/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/v1/tilesets/",
 			url: "tileset-minecarts/2/tileset-minecarts.png",
 			w: 40,
 			h: 40
@@ -2762,7 +2770,7 @@ Util.capitalize = function(e) {
 		},
 		"map-lamplight-b1": {
 			type: "json",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/data/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/data/",
 			url: "map-lamplight-b1/1/map-lamplight-b1.json"
 		},
 		"map-lamplight-b2": {
@@ -2792,7 +2800,7 @@ Util.capitalize = function(e) {
 		},
 		"map-lamplight-c2": {
 			type: "json",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/data/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/data/",
 			url: "map-lamplight-c2/1/map-lamplight-c2.json"
 		},
 		"map-lamplight-c3": {
@@ -2802,12 +2810,12 @@ Util.capitalize = function(e) {
 		},
 		"map-lamplight-c4": {
 			type: "json",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1500/assets/data/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/data/",
 			url: "map-lamplight-c4/1/map-lamplight-c4.json"
 		},
 		"map-lamplight-d4": {
 			type: "json",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/data/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/data/",
 			url: "map-lamplight-d4/2/map-lamplight-d4.json"
 		},
 		"map-lamplight-d5": {
@@ -3002,12 +3010,12 @@ Util.capitalize = function(e) {
 		},
 		"map-lamplight-c4-winterfest": {
 			type: "json",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/data/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/data/",
 			url: "map-lamplight-c4-winterfest/1/map-lamplight-c4-winterfest.json"
 		},
 		"map-lamplight-d4-winterfest": {
 			type: "json",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/data/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/data/",
 			url: "map-lamplight-d4-winterfest/1/map-lamplight-d4-winterfest.json"
 		},
 		"map-skywatch-a0": {
@@ -3537,19 +3545,19 @@ Util.capitalize = function(e) {
 		},
 		"bg-dorm-house": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde2015/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde2015/assets/images/zones/",
 			key: "bg-dorm-house",
 			v: "4"
 		},
 		"bg-dorm-cave": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde2015/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde2015/assets/images/zones/",
 			key: "bg-dorm-cave",
 			v: "4"
 		},
 		"bg-dorm-tree": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde2015/assets/images/zones/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde2015/assets/images/zones/",
 			key: "bg-dorm-tree",
 			v: "4"
 		},
@@ -3615,7 +3623,7 @@ Util.capitalize = function(e) {
 		},
 		"login-bg-1": {
 			type: "localAtlas",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pdenot1.50.0/assets/images/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pdenot1.50.0/assets/images/",
 			key: "login-bg-1",
 			v: "4"
 		},
@@ -4309,13 +4317,13 @@ Util.capitalize = function(e) {
 		},
 		"bgm-battle": {
 			type: "bgm",
-                        base: "https://healingmunch.github.io/Website-Tester/pde1500/assets/audio/bgm/",
+                        base: "https://ao28th28thedev.github.io/Website-Tester/pde1500/assets/audio/bgm/",
 			url: "bgm-battle.ogg",
                         v: 2
 		},
 		"bgm-intro": {
 			type: "bgm",
-			base: "https://healingmunch.github.io/Website-Tester/pde1500/assets/audio/bgm/",
+			base: "https://ao28th28thedev.github.io/Website-Tester/pde1500/assets/audio/bgm/",
 			url: "bgm-intro.ogg",
                         v: 2
 		},
@@ -5416,13 +5424,13 @@ Util.capitalize = function(e) {
 		},
 		"monster-small-130": {
 			type: "sprite",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/monsters/small/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/monsters/small/",
 			url: "130.png",
 			x: 45
 		},
 		"monster-normal-130": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/monsters/normal/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/monsters/normal/",
 			url: "130.png",
 			x: 45,
 			w: 82,
@@ -5430,7 +5438,7 @@ Util.capitalize = function(e) {
 		},
 		"monster-reduced-130": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/monsters/reduced/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/monsters/reduced/",
 			url: "130.png",
 			x: 22,
 			w: 45,
@@ -7554,7 +7562,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-outfit-male-13": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/normal/outfit/male/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/normal/outfit/male/",
 			url: "13.png",
 			x: 91,
 			y: 155,
@@ -7995,7 +8003,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-outfit-male-58": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1221/assets/images/player/normal/male/outfit/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1221/assets/images/player/normal/male/outfit/",
 			url: "58.png",
 			x: 92,
 			y: 154,
@@ -8004,7 +8012,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-outfit-male-59": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
 			url: "0-1.png",
 			x: 92,
 			y: 154,
@@ -8085,7 +8093,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-outfit-male-13": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/reduced/outfit/male/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/reduced/outfit/male/",
 			url: "13.png",
 			x: 43,
 			y: 85,
@@ -8328,7 +8336,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-outfit-male-38": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/outfits/male/reduced/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/outfits/male/reduced/",
 			url: "38.png",
 			x: 17,
 			y: 0,
@@ -8526,7 +8534,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-outfit-male-58": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1221/assets/images/player/reduced/male/outfit/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1221/assets/images/player/reduced/male/outfit/",
 			url: "58.png",
 			x: 45,
 			y: 84,
@@ -8535,7 +8543,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-outfit-male-59": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
             url: "0-1.png",
 			x: 45,
 			y: 84,
@@ -9048,7 +9056,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-outfit-female-57": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/outfits/female/normal/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/outfits/female/normal/",
 			url: "57.png",
             x: 94,
             y: 156,
@@ -9057,7 +9065,7 @@ Util.capitalize = function(e) {
         },
         "normal-outfit-female-58": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-22-4/assets/images/outfits/normal/female/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-22-4/assets/images/outfits/normal/female/",
             url: "58.png",
             x: 94,
             y: 156,
@@ -9066,7 +9074,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-outfit-female-59": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
             url: "0-1.png",
 			x: 91,
 			y: 140,
@@ -9579,7 +9587,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-outfit-female-57": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-10-0/images/outfits/female/reduced/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/outfits/female/reduced/",
 			url: "57.png",
 			x: 44,
 			y: 86,
@@ -9588,7 +9596,7 @@ Util.capitalize = function(e) {
         },
         "reduced-outfit-female-58": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-22-4/assets/images/outfits/reduced/female/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-22-4/assets/images/outfits/reduced/female/",
             url: "58.png",
 			x: 45,
 			y: 86,
@@ -9597,7 +9605,7 @@ Util.capitalize = function(e) {
         },
         "reduced-outfit-female-59": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
             url: "0-1.png",
 			x: 45,
 			y: 86,
@@ -10326,7 +10334,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hat-77": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hats/normal/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hats/normal/",
                                 url: "77.png",
                                 x: 80,
                                 y: 25,
@@ -10335,7 +10343,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hat-78": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hats/normal/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hats/normal/",
                                 url: "78.png",
                                 x: 49,
                                 y: 39,
@@ -10344,7 +10352,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-hat-79": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/normal/hats/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/normal/hats/",
 			url: "24.png",
 			x: 49,
 			y: 53,
@@ -10353,7 +10361,7 @@ Util.capitalize = function(e) {
 		},
 		"normal-hat-80": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/normal/hats/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/normal/hats/",
 			url: "80.png",
 			x: 102,
 			y: 54,
@@ -11046,7 +11054,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hat-77": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hats/reduced/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hats/reduced/",
                                 url: "77.png",
                                 x: 39,
                                 y: 23,
@@ -11055,7 +11063,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hat-78": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hats/reduced/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hats/reduced/",
                                 url: "78.png",
                                 x: 23,
                                 y: 29,
@@ -11064,7 +11072,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-hat-79": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/reduced/hats/",
+			base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/reduced/hats/",
 			url: "24.png",
 			x: 21,
 			y: 35,
@@ -11073,7 +11081,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-hat-80": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-50-0/assets/images/player/reduced/hats/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-50-0/assets/images/player/reduced/hats/",
             url: "80.png",
 			x: 46,
 			y: 30,
@@ -11901,7 +11909,7 @@ Util.capitalize = function(e) {
         },
         "normal-weapon-92": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-10-0/assets/images/player/normal/weapons/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-10-0/assets/images/player/normal/weapons/",
             url: "92.png",
             x: 129,
             y: 142,
@@ -11910,7 +11918,7 @@ Util.capitalize = function(e) {
         },
         "normal-weapon-93": {
             type: "spritesheet",
-            base: "https://healingmunch.github.io/prodidows/1-10-0/assets/images/player/normal/weapons/",
+            base: "https://ao28th28thedev.github.io/prodidows/1-10-0/assets/images/player/normal/weapons/",
             url: "92.png",
             x: 129,
             y: 142,
@@ -15231,7 +15239,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-1": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15240,7 +15248,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-2": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15249,7 +15257,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-3": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15258,7 +15266,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-4": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15267,7 +15275,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-5": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15276,7 +15284,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-6": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15285,7 +15293,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-7": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15294,7 +15302,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-8": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15303,7 +15311,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-9": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15312,7 +15320,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-10": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15321,7 +15329,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-11": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15330,7 +15338,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-12": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15339,7 +15347,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-13": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15348,7 +15356,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-14": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15357,7 +15365,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-15": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15366,7 +15374,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-24-16": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15375,7 +15383,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-male-undefined-undefined": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15384,7 +15392,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-1": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15393,7 +15401,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-2": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15402,7 +15410,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-3": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15411,7 +15419,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-4": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15420,7 +15428,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-5": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15429,7 +15437,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-6": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15438,7 +15446,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-7": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15447,7 +15455,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-8": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15456,7 +15464,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-9": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15465,7 +15473,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-10": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15474,7 +15482,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-11": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15483,7 +15491,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-12": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15492,7 +15500,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-13": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15501,7 +15509,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-14": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15510,7 +15518,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-15": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15519,7 +15527,7 @@ Util.capitalize = function(e) {
                         },
                         "normal-hair-female-24-16": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15528,7 +15536,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-1": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15537,7 +15545,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-2": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15546,7 +15554,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-3": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15555,7 +15563,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-4": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15564,7 +15572,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-5": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15573,7 +15581,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-6": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15582,7 +15590,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-7": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15591,7 +15599,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-8": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15600,7 +15608,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-9": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15609,7 +15617,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-10": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15618,7 +15626,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-11": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15627,7 +15635,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-12": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15636,7 +15644,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-13": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15645,7 +15653,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-14": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15654,7 +15662,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-15": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15663,7 +15671,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-female-24-16": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15672,7 +15680,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-1": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15681,7 +15689,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-2": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15690,7 +15698,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-3": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15699,7 +15707,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-4": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15708,7 +15716,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-5": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15717,7 +15725,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-6": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15726,7 +15734,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-7": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15735,7 +15743,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-8": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15744,7 +15752,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-9": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15753,7 +15761,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-10": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15762,7 +15770,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-11": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15771,7 +15779,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-12": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15780,7 +15788,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-13": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15789,7 +15797,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-14": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15798,7 +15806,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-15": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15807,7 +15815,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-24-16": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -15816,7 +15824,7 @@ Util.capitalize = function(e) {
                         },
                         "reduced-hair-male-undefined-undefined": {
                                 type: "spritesheet",
-                                base: "https://healingmunch.github.io/prodidows/1-10-0/images/hair/",
+                                base: "https://ao28th28thedev.github.io/prodidows/1-10-0/images/hair/",
                                 url: "0-1.png",
                                 x: 88,
                                 y: 74,
@@ -16464,7 +16472,7 @@ Util.capitalize = function(e) {
 		},
 		"reduced-hair-male-5-16": {
 			type: "spritesheet",
-			base: "https://healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1221/assets/images/player/reduced/male/hair/",
+			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1221/assets/images/player/reduced/male/hair/",
 			url: "5-16.png",
 			x: 42,
 			y: 44,
@@ -30224,7 +30232,7 @@ Util.capitalize = function(e) {
 		return Prodigy.Hints.data[e][Math.floor(Math.random() * Prodigy.Hints.data[e].length)]
 	}
 }, Prodigy.Hints.prototype.constructor = Prodigy.Hints, Prodigy.EmailDomains = function() {}, Prodigy.EmailDomains.data = {
-	domains: ["aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com", "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com", "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk", "email.com", "games.com", "gmx.net", "hush.com", "hushmail.com", "icloud.com", "inbox.com", "lavabit.com", "love.com", "outlook.com", "pobox.com", "rocketmail.com", "safe-mail.net", "wow.com", "ygm.com", "ymail.com", "zoho.com", "fastmail.fm", "yandex.com", "bellsouth.net", "charter.net", "comcast.net", "cox.net", "earthlink.net", "juno.com", "btinternet.com", "virginmedia.com", "blueyonder.co.uk", "freeserve.co.uk", "live.co.uk", "ntlworld.com", "o2.co.uk", "orange.net", "sky.com", "talktalk.co.uk", "tiscali.co.uk", "virgin.net", "wanadoo.co.uk", "bt.com", "sina.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "hotmail.fr", "live.fr", "laposte.net", "yahoo.fr", "wanadoo.fr", "orange.fr", "gmx.fr", "sfr.fr", "neuf.fr", "free.fr", "gmx.de", "hotmail.de", "live.de", "online.de", "t-online.de", "web.de", "yahoo.de", "mail.ru", "rambler.ru", "yandex.ru", "ya.ru", "list.ru", "hotmail.be", "live.be", "skynet.be", "voo.be", "tvcablenet.be", "telenet.be", "hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar", "hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com", "bell.ca", "bell.com", "rogers.ca", "rogers.com", "cogeco.ca", "cogeco.com", "hotmail.ca", "live.ca", "yahoo.ca", "healingmunch.github.io/XPMUser.github.io", "oldprodigy.onrender.com", "prodigygame.com"]
+	domains: ["aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com", "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com", "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk", "email.com", "games.com", "gmx.net", "hush.com", "hushmail.com", "icloud.com", "inbox.com", "lavabit.com", "love.com", "outlook.com", "pobox.com", "rocketmail.com", "safe-mail.net", "wow.com", "ygm.com", "ymail.com", "zoho.com", "fastmail.fm", "yandex.com", "bellsouth.net", "charter.net", "comcast.net", "cox.net", "earthlink.net", "juno.com", "btinternet.com", "virginmedia.com", "blueyonder.co.uk", "freeserve.co.uk", "live.co.uk", "ntlworld.com", "o2.co.uk", "orange.net", "sky.com", "talktalk.co.uk", "tiscali.co.uk", "virgin.net", "wanadoo.co.uk", "bt.com", "sina.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "hotmail.fr", "live.fr", "laposte.net", "yahoo.fr", "wanadoo.fr", "orange.fr", "gmx.fr", "sfr.fr", "neuf.fr", "free.fr", "gmx.de", "hotmail.de", "live.de", "online.de", "t-online.de", "web.de", "yahoo.de", "mail.ru", "rambler.ru", "yandex.ru", "ya.ru", "list.ru", "hotmail.be", "live.be", "skynet.be", "voo.be", "tvcablenet.be", "telenet.be", "hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar", "hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com", "bell.ca", "bell.com", "rogers.ca", "rogers.com", "cogeco.ca", "cogeco.com", "hotmail.ca", "live.ca", "yahoo.ca", "Ao28th28.github.io", "oldprodigy.onrender.com", "prodigygame.com"]
 }, Prodigy.EmailDomains.prototype = {
 	hasCommonDomain: function(e) {
 		var t = e.substring(e.indexOf("@") + 1, e.length);
@@ -45651,24 +45659,37 @@ Prodigy.ForestBoss = function(e, t) {
 	}, Util.log("Daily Login Session:", e.data.dailyLoginBonus), o
 }, Prodigy.Menu.Social = function (e, t, i) {
 	Prodigy.RenderMenu.call(this, e, t, 0, 0, e.prodigy.textureMenu), e.prodigy.mail.getMailCount() > 0 && (i = Prodigy.Menu.Social.BATTLE_REQUESTS), this.create(i)
-}, Prodigy.Menu.Social.ARENA = 0, Prodigy.Menu.Social.ACHIEVEMENTS = 1, Prodigy.extends(Prodigy.Menu.Social, Prodigy.RenderMenu, {
+}, Prodigy.Menu.Social.LEADERBOARD = 0, Prodigy.Menu.Social.ARENA = 1, Prodigy.Menu.Social.ARENA_LEADERBOARD = 2, Prodigy.Menu.Social.BATTLE_REQUESTS = 3, Prodigy.Menu.Social.BOUNTIES = 4, Prodigy.Menu.Social.ACHIEVEMENTS = 5, Prodigy.extends(Prodigy.Menu.Social, Prodigy.RenderMenu, {
 	constructor: Prodigy.Menu.Social,
 	create: function (e) {
 		this.addTransparent();
 		var t = [{
+			icon: "leaderboard",
+			top: "Class",
+			bot: "Leaders"
+		}, {
+			icon: "challenge",
+			top: "My",
+			bot: "Arena"
+		}, {
 			icon: "challenge",
 			top: "Arena",
-			bot: "Store"
+			bot: "Leaders"
+		}, {
+			icon: "battle-request",
+			top: "Battle",
+			bot: "Requests",
+			hasIndicator: !0
 		}];
-		this.createBaseSetup(30, 16, "stat", "AWARDS", t, !0);
+		this.createBaseSetup(30, 16, "shine", "AWARDS", t, !0);
 		var i = this.game.prodigy.create.element(this, 0, 0);
-		i.setRenderState(!0), Prodigy.RenderMenu.prototype.create.call(this), this.setMode(e);
+		i.setRenderState(!0), i.add(new Phaser.TileSprite(this.game, 51, 220, 1178, 40, "core", "blue-top")), i.add(new Phaser.TileSprite(this.game, 51, 260, 1178, 340, "core", "blue-mid")), i.add(new Phaser.TileSprite(this.game, 51, 600, 1178, 40, "core", "blue-top2")), Prodigy.RenderMenu.prototype.create.call(this), this.setMode(e);
 		for (var a = 0; a < t.length; a++) {
 			var s = t[a];
 			if (s.hasIndicator) {
 				var r = this.game.prodigy.create.indicator(0, 0),
 					o = this.buttons[a].sprite;
-				o.addChild(r), this.buttons[a].indicator = r, r.visible = !0;
+				o.addChild(r), this.buttons[a].indicator = r, r.visible = !1;
 				var n = Util.getCenteredXY(r.width, 0, o.x, 0, o.width, 0);
 				r.x = n.x, r.y = o.y - r.height, r.addTween(), r.visible = this.game.prodigy.mail.getMailCount() > 0
 			}
@@ -45684,7 +45705,7 @@ Prodigy.ForestBoss = function(e, t) {
 	setMode: function (e) {
 		Prodigy.RenderMenu.prototype.setMode.call(this, e), Util.isDefined(this.content) && this.content.destroy();
 		var t;
-		t = e === Prodigy.Menu.Social.ARENA ? "Arena" : e === Prodigy.Menu.Social.ARENA_LEADERBOARD ? "ArenaLeaderboard" : e === Prodigy.Menu.Social.BATTLE_REQUESTS ? "BattleRequests" : e === Prodigy.Menu.Social.BOUNTIES ? "Bounties" : e === Prodigy.Menu.Social.ACHIEVEMENTS ? "Achievements" : "Leaderboard", this.content = new Prodigy.Container[t](this.game, this, 80, 200), this.page = e
+		t = e === Prodigy.Menu.Social.ARENA ? "Arena" : e === Prodigy.Menu.Social.ARENA_LEADERBOARD ? "ArenaLeaderboard" : e === Prodigy.Menu.Social.BATTLE_REQUESTS ? "BattleRequests" : "Leaderboard", this.content = new Prodigy.Container[t](this.game, this, 80, 200), this.page = e
 	}
 }), Prodigy.Menu.SystemMenu = function(e, t) {
 	Prodigy.RenderMenu.call(this, e, t, 0, 0, e.prodigy.textureMenu), this.create()
@@ -45812,7 +45833,7 @@ Prodigy.ForestBoss = function(e, t) {
 		}, this.game.prodigy.graphics.setResolutionExtraGigantic.bind(this))
 	},
 	openOther: function() {
-		var z = Util.isDefined(this.game.prodigy.player.world) ? "Your world is: " + Prodigy.Menu.Server.getServerName(this.game.prodigy.player.world) : "Your world is: pde1500";
+		var z = Util.isDefined(this.game.prodigy.player.world) ? "Your world is: " + this.game.prodigy.player.world.name : "You are playing in Offline Mode.";
 		this.game.prodigy.create.font(this.content, 0, -50, z, {
 			width: 600,
 			align: "center"
@@ -45891,7 +45912,7 @@ Prodigy.ForestBoss = function(e, t) {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 75, "XPMUser/HealingMunch and Toonigy", {
+		this.game.prodigy.create.font(this.content, 0, 75, "Ao28th28 & Toonigy", {
 			width: 600,
 			align: "center",
 		})
@@ -45899,15 +45920,15 @@ Prodigy.ForestBoss = function(e, t) {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, Prodidows, steadydelusionreview, Craftersshaft", {
+		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, steadydelusionreview, Craftersshaft", {
+			width: 610,
+			align: "center",
+		})
+		this.game.prodigy.create.font(this.content, 0, 230, "Original Game By:", {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 220, "Original Game By:", {
-			width: 600,
-			align: "center",
-		})
-		this.game.prodigy.create.font(this.content, 0, 245, "Prodigy Education a.k.a. SMARTeacher", {
+		this.game.prodigy.create.font(this.content, 0, 255, "Prodigy Education a.k.a. SMARTeacher", {
 			width: 600,
 			align: "center",
 		})
@@ -46233,6 +46254,7 @@ Prodigy.ForestBoss = function(e, t) {
 	x: 720,
 	y: 20,
 	map: "btn-bonfire",
+	icon: "zone-fire",
 	target: "volcano-0",
 	msg: "Chef Mugs is in need of a wizard just like you! Learn fire spells and defeat a powerful boss!",
 	iconX: 1004,
@@ -46249,6 +46271,7 @@ Prodigy.ForestBoss = function(e, t) {
 	x: 80,
 	y: 50,
 	map: "btn-shiverchill",
+	icon: "zone-ice",
 	target: "mountain-0",
 	msg: "Bok & Slip are in need of a wizard just like you! Learn ice spells and defeat a powerful boss!",
 	iconX: 1004,
@@ -46265,6 +46288,7 @@ Prodigy.ForestBoss = function(e, t) {
 	x: 807,
 	y: 91,
 	map: "btn-skywatch",
+	icon: "zone-cloud",
 	target: "cloud-0",
 	msg: "Cumulo is in need of a wizard just like you! Learn storm spells and defeat a powerful boss!",
 	iconX: 1004,
@@ -46346,7 +46370,7 @@ Prodigy.ForestBoss = function(e, t) {
 	x: 100,
 	y: 340,
 	map: "btn-portal",
-	target: "arena-0",
+	target: "town-2",
 	msg: "Feel like challenging the best of the best? Defeat powerful wizards in duels and earn great rewards!"
 }], Prodigy.Menu.Character = function(e, t, i) {
 	this.player = i, Prodigy.RenderMenu.call(this, e, t, 0, 0, e.prodigy.textureMenu), this.create()
@@ -46408,7 +46432,7 @@ Prodigy.ForestBoss = function(e, t) {
 		}
 		this.modules[0].open();
 		var s = this.game.prodigy.create.panel(this, 5, 40, 5, 1, "blue");
-		s.scale.y = -1, s.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "healingmunch.github.io/XPMUser.github.io/oldprodigy/pde1700/?mods=WalkSpeed,FastGameSpeed,ImitationTitan/")), s.alpha = .5, this.game.prodigy.create.font(this, s.x, s.y + 5 - 40, "+Best Friend", {
+		s.scale.y = -1, s.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "Ao28th28.github.io/oldprodigy/pde1700/?mods=WalkSpeed,FastGameSpeed,ImitationTitan/")), s.alpha = .5, this.game.prodigy.create.font(this, s.x, s.y + 5 - 40, "+Best Friend", {
 			align: "center",
 			width: 200
 		})
@@ -46473,7 +46497,7 @@ Prodigy.ForestBoss = function(e, t) {
 }, Prodigy.extends(Prodigy.Menu.Server, Prodigy.Control.Menu, {
 	constructor: Prodigy.Menu.Server,
 	menuSetup: function () {
-		Prodigy.Control.Menu.prototype.menuSetup.call(this), this.showFrame("map", "CHOOSE YOUR WORLD", []), this.game.prodigy.create.font(this, 125, 60, "Pick the same world as your friends to play together!", {
+		Prodigy.Control.Menu.prototype.menuSetup.call(this), this.showFrame("map", "The real multiplayer mode is not coming soon.", []), this.game.prodigy.create.font(this, 125, 60, "Nobody will help us...", {
 			size: 20
 		}), this.game.prodigy.create.textButton(this, 930, 20, {
 			size: Prodigy.Control.TextButton.MED,
@@ -46550,7 +46574,7 @@ Prodigy.ForestBoss = function(e, t) {
 	getServerIcon: function (e) {
 		return Util.convertItemToIcon(e)
 	},
-	connect: function (e, t) {
+	connect: function(e, t) {
 		this.content.removeAll(!0);
 		var i = "Connecting to ";
 		i += Util.isDefined(e.name) ? e.name : "server", this.game.prodigy.create.font(this.content, 0, 320, i + "...", {
@@ -46559,7 +46583,7 @@ Prodigy.ForestBoss = function(e, t) {
 			align: "center"
 		}), this.game.prodigy.network.joinMultiplayerServer(e, "zone-login", this.connected.bind(this, !0), this.connected.bind(this, !1, t), this.connected.bind(this, !1, t, "This world is full. Please select another world"))
 	},
-	connected: function (e, t, i) {
+	connected: function(e, t, i) {
 		Util.isDefined(this) && Util.isDefined(this.game) && (this.content.removeAll(!0), e ? this.close(!0) : this.showError(i || "Could not connect to world. Try again, or select another world.", t))
 	},
 	showError: function (e, t) {
@@ -47326,7 +47350,7 @@ Prodigy.ForestBoss = function(e, t) {
                 this.game.prodigy.world.teleport("house-suburbs")
         },
 	challenge: function() {
-		this.game.prodigy.network.openWebsite("github.com/XPMUser/healingmunch.github.io/XPMUser.github.io/issues/new?assignees=&labels=Suggestion&projects=&template=feature_request.yml&title=%2ACoolest+title+ever%2A")
+		this.game.prodigy.network.openWebsite("github.com/Ao28th28/Ao28th28.github.io/issues/new?assignees=&labels=Suggestion&projects=&template=feature_request.yml&title=%2ACoolest+title+ever%2A")
 	},
 	sendGift: function() {
 		this.game.prodigy.network.openWebsite("youtu.be/dQw4w9WgXcQ?feature=shared")
@@ -49095,7 +49119,7 @@ Prodigy.ForestBoss = function(e, t) {
 		equipment: '{"hat":23, "outfit":24, "weapon":68, "boots":18}'
 	},
 	title: "Prodidows",
-	description: "XPMUser has used this wizard for Prodidows before! This is XPMUser's other wizard!",
+	description: "Ao28th28 has used this wizard for Prodidows before! This is Ao28th28's other wizard!",
 	pets: [{
                 ID: 1,
                 level: 1
@@ -49119,8 +49143,8 @@ Prodigy.ForestBoss = function(e, t) {
 		appearance: '{"name":"Techeater David", "gender":"male", "hairStyle":3,"hairColor":16,"skinColor":1,"eyeColor":13}',
 		equipment: '{"hat":23, "outfit":24, "weapon":68, "boots":18}'
 	},
-	title: "XPMUser",
-	description: "This is XPMUser's main character!",
+	title: "Ao28th28",
+	description: "This is Ao28th28's main character!",
 	pets: [{
                 ID: 1,
                 level: 1
@@ -49160,8 +49184,8 @@ Prodigy.ForestBoss = function(e, t) {
 		appearance: '{"name":"Botanist David", "gender":"male", "hairStyle":3,"hairColor":16,"skinColor":1,"eyeColor":13}',
 		equipment: '{"hat":23, "outfit":52, "weapon":47, "boots":18}'
 	},
-	title: "XPMUser from Daboss7173's PDE",
-	description: "This is XPMUser's main character!",
+	title: "Ao28th28 from Daboss7173's PDE",
+	description: "This is Ao28th28's main character!",
 	pets: [{
                 ID: 50,
                 level: 1
@@ -49266,7 +49290,7 @@ Prodigy.ForestBoss = function(e, t) {
 		equipment: '{"hat":23, "outfit":24, "weapon":92, "boots":18}'
 	},
 	title: "Prodidows",
-	description: "HealingMunch has used this wizard for Prodidows before! This is HealingMunch's other wizard!",
+	description: "Ao28th28 has used this wizard for Prodidows before! This is Ao28th28's other wizard!",
 	pets: [{
                 ID: 36,
                 level: 100
@@ -49293,8 +49317,8 @@ Prodigy.ForestBoss = function(e, t) {
 		appearance: '{"name":"David the Forker", "gender":"male", "hairStyle":3,"hairColor":16,"skinColor":1,"eyeColor":13}',
 		equipment: '{"hat":23, "outfit":24, "weapon":92, "boots":18}'
 	},
-	title: "HealingMunch",
-	description: "This is HealingMunch's main character!",
+	title: "Ao28th28",
+	description: "This is Ao28th28's main character!",
 	pets: [{
                 ID: 36,
                 level: 100
@@ -49315,11 +49339,11 @@ Prodigy.ForestBoss = function(e, t) {
 }, {
     opponent: {
         data: '{"level":100}',
-        appearance: '{"name":"Chef Ice", "gender":"female", "hairStyle":2,"hairColor":3,"skinColor":1,"eyeColor":12}',
-        equipment: '{"hat":23, "outfit":52, "weapon":47, "boots":18}'
+        appearance: '{"name":"Forestwalker the Digger", "gender":"female", "hairStyle":4,"hairColor":10,"skinColor":1,"eyeColor":10}',
+        equipment: '{"hat":23, "outfit":53, "weapon":77, "boots":26}'
     },
-    title: "HealingMunch's another alt account from Daboss7173's PDE",
-    description: "She grinded the arena to be #1 on the arena leaderboards in Daboss7173's PDE.",
+    title: "Ao28th28's another alt account from Daboss7173's PDE",
+    description: "She is #1 on the arena leaderboards in Daboss7173's PDE.",
 	pets: [{
                 ID: 126,
                 level: 100
@@ -49334,8 +49358,8 @@ Prodigy.ForestBoss = function(e, t) {
         appearance: '{"name":"Pilot Bobby", "gender":"male", "hairStyle":4,"hairColor":1,"skinColor":1,"eyeColor":10}',
         equipment: '{"hat":62, "outfit":53, "weapon":78, "boots":26}'
     },
-    title: "HealingMunch's Mohawk College account from Daboss7173's PDE",
-    description: "He is also HealingMunch's alt account from Daboss7173's PDE.",
+    title: "Ao28th28's Mohawk College account from Daboss7173's PDE",
+    description: "He is also Ao28th28's alt account from Daboss7173's PDE.",
 	pets: [{
                 ID: 126,
                 level: 100
@@ -49379,7 +49403,7 @@ Prodigy.ForestBoss = function(e, t) {
         equipment: '{"hat":80, "outfit":38, "weapon":68, "boots":26}'
     },
     title: "Issac's character from Daboss7173's PDE",
-    description: "He's XPMUser/Ao28th28's high school friend.",
+    description: "He's Ao28th28/Ao28th28's high school friend.",
     pets: [],
     drops: [{
         type: "gold",
@@ -49407,8 +49431,8 @@ Prodigy.ForestBoss = function(e, t) {
         appearance: '{"name":"Daniel Redstrider", "gender":"male", "hairStyle":5,"hairColor":4,"skinColor":2,"eyeColor":3}',
         equipment: '{"weapon":25}'
     },
-    title: "Issac's character from XPMUser's pde1500",
-    description: "XPMUser introduced Issac to his pde1500. This is Issac's character from XPMUser's pde1500.",
+    title: "Issac's character from Ao28th28's pde1500",
+    description: "Ao28th28 introduced Issac to his pde1500. This is Issac's character from Ao28th28's pde1500.",
     pets: [],
     drops: [{
         type: "gold",
@@ -49431,10 +49455,23 @@ Prodigy.ForestBoss = function(e, t) {
     opponent: {
         data: '{"level":60}',
         appearance: '{"name":"Angel of the World", "gender":"male", "hairStyle":5,"hairColor":5,"skinColor":4,"eyeColor":4}',
+        equipment: '{"boots":10, "outfit":25, "hat":2, "weapon":20}'
+    },
+    title: "Issac's character from Ao28th28's pde1500 as well",
+    description: "This is Issac's other character from Ao28th28's pde1500.",
+    pets: [],
+    drops: [{
+        type: "gold",
+        N: 5000
+    }]
+}, {
+    opponent: {
+        data: '{"level":16}',
+        appearance: '{"name":"Christian Rainore", "gender":"female", "hairStyle":5,"hairColor":5,"skinColor":4,"eyeColor":4}',
         equipment: '{"boots":18, "outfit":24, "hat":23, "weapon":92}'
     },
-    title: "Issac's character from XPMUser's pde1500 as well",
-    description: "This is Issac's other character from XPMUser's pde1500.",
+    title: "Pde1500 bot",
+    description: "This is a bot from pde1500",
     pets: [],
     drops: [{
         type: "gold",
@@ -50462,7 +50499,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	subject: "The real Multiplayer Mode is coming soon!",
 	isOpened: !1,
 	image: "after-hours",
-	message: "The actual Multiplayer Mode's under construction for now!"
+	message: "Wait, multiplayer mode is not coming soon so fuck it."
 }, {
 	id: 3,
 	subject: "You can now catch pets in The Lost Island!",
@@ -54449,7 +54486,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 		h = this.game.prodigy.player.getArenaRank(),
 		l = this.game.prodigy.player.getArenaScore(),
 		d = this.game.prodigy.player.isUnranked();
-	this.createMemberBtn(this, 0, 320), this.createChallengeBtn(this, 280, 320);
+	this.createMemberBtn(this, 0, 320), this.game.prodigy.player.hasCompletedTutorial() && this.createChallengeBtn(this, 280, 320);
 	var p = this.game.prodigy.create.panel(this, 0, 0, 13, 7, "panel-base"),
 		c = p.add(this.game.prodigy.create.sprite(10, 10, "icons", "emblem-rank" + (h + 1)));
 	d && (c.tint = 5592405), this.game.prodigy.create.font(p, 20, 0, d ? r[0] : r[h + 1] + " Rank", {
@@ -54487,7 +54524,8 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	}, {
 		stars: this.game.prodigy.player.getStars(),
 		arenaScore: l
-	}, 0, 30, this.loadWizardsComplete.bind(this, !0), this.loadWizardsComplete.bind(this, !0)), this.game.prodigy.create.button(this, 580, -5, "icons", "player", this.toggle.bind(this))), s && (this.game.prodigy.network.sendEvent("PVP", {
+	}, 0, 30, this.loadWizardsComplete.bind(this, !0), this.loadWizardsComplete.bind(this, !1)), this.game.prodigy.create.button(this, 580, -5, "icons", "info", this.toggle.bind(this))), s && (this.game.prodigy.open.message("Each time you close the browser or get disconnected from an arena battle, your score goes down by [arena]50! \n\nBe a good sport and finish your battles!", null, "info", "You Deserted..."), this.game.prodigy.network.sendAnalytics("PVP ", "view-deserter-message", "Events"), this.game.prodigy.network.sendEvent("PVP", {
+		type: "view-deserter-message",
 		classID: this.game.prodigy.player.getLatestClassID(),
 		grade: this.game.prodigy.player.grade
 	}, !0))
@@ -54521,11 +54559,11 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	createLeaderboard: function () {
 		this.challenge = this.game.prodigy.create.element(this, 560, 0), this.challenge.chars = this.game.prodigy.create.element(this.challenge), this.challenge.icons = [];
 		for (var e = 0; 8 > e; e++) this.challenge.icons.push(this.createIcon(this.challenge.chars, 20, 60 + 45 * e));
-		return this.challenge.error = this.game.prodigy.create.font(this.challenge, 20, 100, "You can still battle other wizards in the Coliseum, Dark Tower, Firefly Forest (with the walking quests), Shiverchill Mountains (with the walking quests), Skywatch (with the walking quests), and Bonfire Spire (with the walking quests)!", {
+		return this.challenge.bar = this.game.prodigy.create.slider(this.challenge, 490, 60, 360, !0, !0), this.challenge.error = this.game.prodigy.create.font(this.challenge, 20, 100, "You must be in a class to view the leaderboard", {
 			size: 20,
 			width: 520,
 			align: "center"
-		}), this.challenge.error.visible = !0, this.challenge
+		}), this.challenge.error.visible = !1, this.challenge
 	},
 	createChallengeBtn: function (e, t, i) {
 		var a = this.game.prodigy.create.panelButton(e, t, i, 6, 3, "button", this.openMessage.bind(this));
@@ -54554,7 +54592,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 			type: "try-match",
 			classID: this.game.prodigy.player.getLatestClassID(),
 			grade: this.game.prodigy.player.grade
-		}, !0), this.findChallenger(), this.message = this.game.prodigy.open.message("Searching for a good match based on your current arena ranking... please wait. \n\n(It could take up to a minute or more.) \n\nTime waiting: XTIMERX", this.closeMessage.bind(this, !0), null, "Finding Challenger")) : this.message = this.game.prodigy.world.teleport("arena-0")
+		}, !0), this.findChallenger(), this.message = this.game.prodigy.open.message("Searching for a good match based on your current arena ranking... please wait. \n\n(It could take up to a minute or more.) \n\nTime waiting: XTIMERX", this.closeMessage.bind(this, !0), null, "Finding Challenger")) : this.message = this.game.prodigy.open.message("Cannot take part in the arena using just Fake Multiplayer Mode.")
 	},
 	findChallenger: function () {
 		if (Util.log("findChallenger retry"), Util.isDefined(this.game)) {
@@ -54566,7 +54604,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 				data: this.game.prodigy.player.data,
 				isMember: this.game.prodigy.player.isMember
 			};
-			this.game.prodigy.network.startMatchmaking(this.game.prodigy.player.getLevel(), this.game.prodigy.player.getArenaScore(), e, this.success.bind(this, !0), this.success.bind(this, !0))
+			this.game.prodigy.network.startMatchmaking(this.game.prodigy.player.getLevel(), this.game.prodigy.player.getArenaScore(), e, this.success.bind(this, !0), this.success.bind(this, !1))
 		}
 	},
 	success: function (e) {
@@ -55885,7 +55923,7 @@ var Boot = function() {
 }();
 Boot.init = function() {
 	var e = new Phaser.Game(1280, 720, Phaser.CANVAS, "game-container");
-	e.prodigy = new Prodigy.GameObj(e), e.state.add("Boot", Boot), e.state.add("Loading", Prodigy.Loading), e.state.add("PVPLoading", Prodigy.PVPLoading), e.state.add("TileScreen", TileScreen), e.state.add("Login", Login), e.state.add("Battle", Prodigy.Battle.Battle), e.state.add("PVP", PVP), e.state.add("Faint", Faint), e.state.add("CharSelect", Prodigy.CharSelect), e.state.add("CharCreate", Prodigy.CharCreate), e.state.add("Docks", Docks), e.state.add("Academy", Academy), e.state.add("Arena", Arena), e.state.add("Forest", Forest), e.state.add("Mountain", Mountain), e.state.add("Cloud", Cloud), e.state.add("Volcano", Volcano), e.state.add("Pirate", Pirate), e.state.add("Plains", Plains), e.state.add("Tree", Tree), e.state.add("Dorm", Dorm), e.state.add("Intro", Intro), e.state.add("Tower", Tower), e.state.add("TowerBase", TowerBase), e.state.add("Dino", Dino), e.state.add("Museum", Museum), e.state.add("TownSquare", TownSquare), e.state.add("Tech", Tech), e.state.add("DinoDig", DinoDig), e.state.add("DanceDance", DanceDance), e.state.add("Util_Gear", Prodigy.Util_Gear), Util.isDefined(window.checkForMods) ? checkForMods(e, window.location.search) : console.log("%c %c %c Found no mods to hook into. %c %c ", "background: #9bd", "background: #48a", "background: #16a; color: #FFF", "background: #48a", "background: #9bd"), e.state.start("Boot"), e.prodigy.player.changeCurrentHearts(99999999999999990)
+	e.prodigy = new Prodigy.GameObj(e), e.state.add("Boot", Boot), e.state.add("Loading", Prodigy.Loading), e.state.add("PVPLoading", Prodigy.PVPLoading), e.state.add("TileScreen", TileScreen), e.state.add("Login", Login), e.state.add("Battle", Prodigy.Battle.Battle), e.state.add("PVP", PVP), e.state.add("Faint", Faint), e.state.add("CharSelect", Prodigy.CharSelect), e.state.add("CharCreate", Prodigy.CharCreate), e.state.add("Docks", Docks), e.state.add("Academy", Academy), e.state.add("Arena", Arena), e.state.add("Forest", Forest), e.state.add("Mountain", Mountain), e.state.add("Cloud", Cloud), e.state.add("Volcano", Volcano), e.state.add("Pirate", Pirate), e.state.add("Plains", Plains), e.state.add("TechZone", TechZone), e.state.add("Tree", Tree), e.state.add("Dorm", Dorm), e.state.add("Intro", Intro), e.state.add("Tower", Tower), e.state.add("TowerBase", TowerBase), e.state.add("Dino", Dino), e.state.add("Museum", Museum), e.state.add("TownSquare", TownSquare), e.state.add("Tech", Tech), e.state.add("DinoDig", DinoDig), e.state.add("DanceDance", DanceDance), e.state.add("Util_Gear", Prodigy.Util_Gear), Util.isDefined(window.checkForMods) ? checkForMods(e, window.location.search) : console.log("%c %c %c Found no mods to hook into. %c %c ", "background: #9bd", "background: #48a", "background: #16a; color: #FFF", "background: #48a", "background: #9bd"), e.state.start("Boot"), e.prodigy.player.changeCurrentHearts(99999999999999990)
 }, Prodigy.Loading = function(e) {
 	Phaser.State.call(this), this.game = e
 }, Prodigy.extends(Prodigy.Loading, Phaser.State, {
@@ -56164,7 +56202,7 @@ var Screen = function() {
 				this.game.prodigy.open.okaymessage("The load character button doesn't work on iPads. We suggest you use another device if you are an iPad user.", null, "star", "Warning!");
 			this.game.prodigy.debug.easyMode(1, 1), this.background.add(this.game.prodigy.create.sprite(0, 0, "login", "bg")), this.loginBox = this.game.prodigy.create.element(this.background), this.usernameField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "username", "", 90, 230, 300, 40), this.usernameField.hide(0), this.usernameField.setLabel(this.loginBox, "Prodigy version 1.50.0");
 			var e = Util.getCookie("prodigyUsername");
-			Util.isDefined(e) && this.usernameField.setValue(e), this.passwordField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "password", "", 90, 310, 300, 40, "password"), this.passwordField.hide(0), this.passwordField.setLabel(this.loginBox, "Definitive Edition version 22"), this.loadCharacterButton = this.game.prodigy.create.button(this.loginBox, 100, 380, "login", "loadcharacter", this.openFileForCharacter.bind(this)), this.offlineModeButton = this.game.prodigy.create.button(this.loginBox, 100, 470, "login", "google-signin-btn", this.onGoogleLoginButtonClick.bind(this)), this.progressBox = this.game.prodigy.create.element(this.background, 100, 250), this.error = this.game.prodigy.create.font(this.progressBox, 0, 0, "", {
+			Util.isDefined(e) && this.usernameField.setValue(e), this.passwordField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "password", "", 90, 310, 300, 40, "password"), this.passwordField.hide(0), this.passwordField.setLabel(this.loginBox, "Definitive Edition version 23"), this.loadCharacterButton = this.game.prodigy.create.button(this.loginBox, 100, 380, "login", "loadcharacter", this.openFileForCharacter.bind(this)), this.offlineModeButton = this.game.prodigy.create.button(this.loginBox, 100, 470, "login", "google-signin-btn", this.onGoogleLoginButtonClick.bind(this)), this.progressBox = this.game.prodigy.create.element(this.background, 100, 250), this.error = this.game.prodigy.create.font(this.progressBox, 0, 0, "", {
 				width: 300,
 				align: "center"
 			}), this.closeButton = this.game.prodigy.create.textButton(this.progressBox, 0, 100, {
@@ -56181,7 +56219,7 @@ var Screen = function() {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "healingmunch.github.io/XPMUser.github.io/oldprodigy/choose/")), (t = this.game.prodigy.create.panel(this.background, 220, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Revolt", {
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "Ao28th28.github.io/oldprodigy/choose/")), (t = this.game.prodigy.create.panel(this.background, 220, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Revolt", {
 				size: 16,
 				width: 120,
 				align: "center"
@@ -56309,7 +56347,7 @@ var Screen = function() {
 			this.game.prodigy.network.login(this.username, this.password, this.game.prodigy.player, this.onError.bind(this, NetworkManager.LOGIN), this.loadSkills.bind(this))
 		}, e.prototype.loadSkills = function(e) {
 			this.game.prodigy.player.username = this.username, (e = e || {}).username = this.username, e.password = this.password, this.error.setText("Loading skills..."), this.game.prodigy.network.loadSkills(this.game.prodigy.player.userID, this.game.prodigy.player.classIDs, this.loginSuccess.bind(this), this.onError.bind(this, NetworkManager.SKILLS))
-		}, e.prototype.loginSuccess = function(e) {
+		}, e.prototype.loginSuccess = function (e) {
 			this.game.prodigy.education.init(e), this.error.setText("Loading worlds..."), this.game.prodigy.network.getWorldList(this.openPlayer.bind(this), this.openPlayer.bind(this, null))
 		}, e.prototype.openPlayer = function(e) {
 			var t = !this.game.prodigy.player.data.school,
@@ -56422,7 +56460,6 @@ WalkableScreen = function(e, t, i) {
 		this.showMenu && (this.menuBar = new Prodigy.HUD.Menu(this.game, this.menus, this.menuDisabled), -1 === this.zoneName.indexOf("scene-") && this.game.broadcaster.broadcast(Prodigy.Events.Mailer.GET_TOTAL_MAIL, "ProdigyMailerButton", [])),
 		Screen.prototype.create.call(this),
 		GameConstants.get("GameConstants.Build.DEBUG") && this.game.broadcaster.addAppListener(Prodigy.Events.Debug.AUTO_CLICK, this.onDebugAutoClick.bind(this), this);
-		this.createBots();
 	},
 	createBackground: function() {
 		this.bg = this.game.prodigy.create.sprite(0, 0, this.screenName, "bg"), this.bg.inputEnabled = !0, this.bg.events.onInputDown.add(this.listener.bind(this), this), this.background.add(this.bg)
@@ -57032,7 +57069,7 @@ CutScene.getValue = function(e, t, i, a, s) {
 		this.background.add(this.game.prodigy.create.sprite(0, 0, "bg-battle-academy")), this.game.prodigy.create.panel(this.foreground, 240, 640, 16, 3, ""), this.next = this.game.prodigy.create.textButton(this.foreground, 820, 660, {
 			icon: "next",
 			text: "next"
-		}, this.offlineMode.bind(this)), this.game.prodigy.create.textButton(this.foreground, 260, 660, {
+		}, this.openWorlds.bind(this)), this.game.prodigy.create.textButton(this.foreground, 260, 660, {
 			icon: "back",
 			text: "back"
 		}, this.back.bind(this)), this.playerF = new Player(this.game), this.playerF.setDefault("female"), this.wizardF = this.game.prodigy.create.player(this.content, this.playerF, 2, 640, 560), this.playerM = new Player(this.game), this.playerM.setDefault("male"), this.wizardM = this.game.prodigy.create.player(this.content, this.playerM, 2, 640, 560), this.wizardM.flip(), this.wizardF.clickCallback = this.showChoices.bind(this, this.wizardF, this.wizardM), this.wizardM.clickCallback = this.showChoices.bind(this, this.wizardM, this.wizardF), this.panels = this.game.prodigy.create.element(this.content), Screen.prototype.screenSetup.call(this)
@@ -59118,6 +59155,9 @@ Prodigy.Skin = function(e, t) {
 			case "tech-0":
 				this.game.prodigy.start("Tech", s);
 				break;
+			case "techzone-0":
+				this.game.prodigy.start("TechZone", s);
+				break;
 			case "forest-0":
 				this.game.prodigy.start("Forest", s);
 				break;
@@ -59135,9 +59175,6 @@ Prodigy.Skin = function(e, t) {
 				break;
 			case "tree-0":
 				this.game.prodigy.start("Tree", s);
-				break;
-			case "arena-0":
-				this.game.prodigy.start("Arena", s);
 				break;
 			case "intro-0":
 				this.game.prodigy.start("Intro", s);
@@ -66801,7 +66838,7 @@ var Tree = function () {
 		}, e
 	}();
 Tree.DATA = {
-	tag: "Tree",
+	tag: "tree-0",
 	zoneName: "dungeon-tree",
 	fullName: "The Walking Room",
 	start: "entrance",
@@ -66834,7 +66871,7 @@ Tree.DATA = {
 };
 var TownSquare = function() {
 		function e(t) {
-			WalkableScreen.call(this, t, e.DATA), this.assets = ["npc-sprite-stache", "npc-sprite-merchant"], this.area = [
+			WalkableScreen.call(this, t, e.DATA), this.assets = ["npc-sprite-stache", "npc-sprite-merchant", "zone-townsquare"], this.area = [
 				[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -66877,7 +66914,7 @@ var TownSquare = function() {
 			WalkableScreen.prototype.create.call(this, [], "town-0")
 		}, e.prototype.screenSetup = function() {
 			WalkableScreen.prototype.screenSetup.call(this), new Prodigy.Container.QuestNPC(this.game, this.content, 440, 290, null, {
-				name: "M.Stache",
+				name: "M. Stache",
 				atlas: "stache"
 			}, this.openText.bind(this));
 			var e = this.game.prodigy.create.sprite(this.game, 490, 250, this.screenName, "wheel");
@@ -66897,13 +66934,13 @@ var TownSquare = function() {
 		}, e.prototype.toForest = function() {
 			this.game.prodigy.world.teleport("tutorial-D8", 1190, 260)
 		}, e.prototype.toDocks = function() {
-			this.game.state.states.Docks.playerX = 575, this.game.state.states.Docks.playerY = 185, this.game.state.start("Docks")
+			this.game.state.states.Docks.playerX = 575, this.game.state.states.Docks.playerY = 185, this.game.prodigy.world.teleport("docks-0")
 		}, e.prototype.toArena = function() {
-			this.game.state.states.Arena.playerX = 640, this.game.state.states.Arena.playerY = 390, this.game.state.start("Arena")
+			this.game.state.states.Arena.playerX = 640, this.game.state.states.Arena.playerY = 390, this.game.prodigy.world.teleport("town-2")
 		}, e.prototype.toAcademy = function() {
-			this.game.state.states.Academy.playerX = 313, this.game.state.states.Academy.playerY = 613, this.game.state.start("Academy")
+			this.game.state.states.Academy.playerX = 313, this.game.state.states.Academy.playerY = 613, this.game.prodigy.world.teleport("academy-0")
 		}, e.prototype.openText = function() {
-			Prodigy.Component.DayWheel(this.game, this.foreground, this.game.prodigy.player)
+			TownSquare(this.game, this.foreground, this.game.prodigy.player)
 		}, e.prototype.openStore = function(e) {
 			for (var t = Util.getDateSeed(), a = [], i = 0; i < Items.data.item.length; i++) 1 === Items.data.item[i].drop && a.push(i + 1);
 			var s = a[Math.floor(Util.pseudoRandomNumber(t) * a.length)],
@@ -66948,7 +66985,20 @@ TownSquare.AUDIO = [{
 	tag: "TownSquare",
 	zoneName: "zone-townsquare",
 	atlas: "zone-townsquare",
-	fullName: "Lamplight Square"
+	fullName: "Lamplight Square",
+	dialogue: [{
+		text: "Hello there! Do you want to spin the Wheel of Wonder?",
+		anim: 4
+	}, {
+		text: "Let's spin that wheel!",
+		anim: 4
+	}, {
+		text: "Sorry, you'll have to come back tomorrow to spin again!",
+		anim: 1
+	}, {
+		text: "Fantastic! Want to spin again?",
+		anim: 4
+	}]
 };
 var Academy = function() {
 	function e(t) {
@@ -69486,7 +69536,7 @@ var Plains = function () {
 	}, e.prototype.toVolcano = function () {
 		this.game.prodigy.world.teleport("volcano-0", 1190, 590)
 	}, e.prototype.toTech = function () {
-		this.game.prodigy.world.teleport("arena-0", 890, 260)
+		this.game.prodigy.world.teleport("techzone-0", 890, 260)
 	}, e.prototype.toClouds = function () {
 		this.game.state.states.Cloud.playerX = 1065, this.game.state.states.Cloud.playerY = 277, this.game.state.start("Cloud")
 	}, e.prototype.startText = function () {
@@ -75629,12 +75679,687 @@ TowerBase.AUDIO = [{
 		audio: Tower.AUDIO[0]
 	}]
 };
-var Arena = function () {
+var TechZone = function () {
 	function e(t) {
-		WalkableScreen.call(this, t, e.DATA), this.assets = ["npc-sprite-stache", "npc-sprite-merchant", "tileset-core"], this.area = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], this.playerX = 890, this.playerY = 260, this.bgm = "bgm-intro"
+		WalkableScreen.call(this, t, e.DATA), this.assets = ["npc-sprite-stache", "npc-sprite-merchant", "tileset-core"], this.area = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], this.playerX = 890, this.playerY = 260, this.bgm = "bgm-intro"
 	}
 	return e.prototype = Object.create(WalkableScreen.prototype), e.prototype.create = function () {
-		WalkableScreen.prototype.create.call(this, [], "arena-0")
+		WalkableScreen.prototype.create.call(this, [], "techzone-0")
+	}, e.prototype.screenSetup = function () {
+		WalkableScreen.prototype.screenSetup.call(this), this.path.addCallback(3, this.toTown.bind(this)), this.createStoreNPC(670, 250, e.STORE), this.digBtn = this.game.prodigy.create.element(this.content, 1010, 280);
+		var t = this.digBtn.add(this.game.prodigy.create.sprite(40, 40, "icons", "star2"));
+		t.anchor.setTo(.5, .5), t.inputEnabled = !0, t.angle = -20, t.events.onInputDown.add(this.toTech, this), this.digBtn.add(this.game.prodigy.create.sprite(0, 10, "icons", "item/47")), this.game.add.tween(t).to({
+			angle: 20
+		}, 1e3, Phaser.Easing.Quadratic.InOut, !0, 0, Number.MAX_VALUE, !0);
+		var i = this.game.prodigy.create.sprite(437, 462, this.screenName, "m1");
+		i.anchor.setTo(.5, 1), this.content.add(i), new Prodigy.Container.QuestNPC(this.game, this.content, 210, 360, e.DATA, {
+			name: "M. Stache",
+			atlas: "stache"
+		});
+		var a = [{
+			pre: "Technician ",
+			req: [{
+				rtype: "item",
+				type: "outfit",
+				ID: 43
+			}, {
+				rtype: "item",
+				type: "hat",
+				ID: 46
+			}],
+			fail: "You need to buy the Robot set to unlock!"
+		}, {
+			post: " the Techfolk",
+			req: [{
+				rtype: "item",
+				type: "item",
+				ID: 65
+			}],
+			fail: "You need to win the Ribbon from the real Robolympics to unlock!"
+		}, {
+			pre: "Techeater ",
+			req: [{
+				rtype: "pet",
+				ID: 77
+			}],
+			fail: "You need to catch or buy a Tech Gobbler to unlock!"
+		}, {
+			post: " Techchaser",
+			member: !0,
+			fail: "You need to become a member to unlock!"
+		}, {
+			post: " the Technician",
+			member: !0,
+			fail: "You need to become a member to unlock!"
+		}, {
+			post: " the Developer",
+			member: !0,
+			fail: "You need to become a member to unlock!"
+		}];
+		this.addNicknamer(336, 223, a)
+	}, e.prototype.toPlains = function () {
+		this.game.prodigy.world.teleport("pirate-0")
+	}, e.prototype.toTech = function () {
+		this.game.prodigy.world.teleport("lamplight-D4")
+	}, e.prototype.toTown = function () {
+		this.game.prodigy.world.teleport("cloud-1", 188, 560)
+	}, e
+}();
+TechZone.STORE = {
+	name: "The Tech Store",
+	items: [{
+		ID: 76,
+		type: "hat"
+	}, {
+		ID: 77,
+		type: "hat"
+	}, {
+		ID: 78,
+		type: "hat"
+	}, {
+		ID: 58,
+		type: "outfit"
+	}, {
+		ID: 77,
+		type: "pet"
+	}, {
+		ID: 79,
+		type: "hat"
+	}]
+}, TechZone.AUDIO = [{
+	tag: "voice-4",
+	s: 0,
+	d: 2
+}, {
+	tag: "voice-4",
+	s: 2,
+	d: 1
+}, {
+	tag: "voice-4",
+	s: 3,
+	d: 1
+}, {
+	tag: "voice-4",
+	s: 4,
+	d: 2
+}, {
+	tag: "voice-4",
+	s: 6,
+	d: 1
+}], TechZone.DATA = {
+	ID: 10,
+	tag: "techzone-0",
+	zoneName: "zone-tech",
+	atlas: "zone-tech",
+	fullName: "Tech Zone",
+	npc: "Cumulo",
+	icon: "zone-air",
+	battle: {
+		screen: "bg-battle-tech",
+		encounter: [{
+			ID: 4
+		}, {
+			ID: 5
+		}, {
+			ID: 6
+		}, {
+			ID: 13
+		}, {
+			ID: 14
+		}, {
+			ID: 15
+		}, {
+			ID: 18
+		}, {
+			ID: 19
+		}, {
+			ID: 20
+		}, {
+			ID: 21
+		}, {
+			ID: 22
+		}, {
+			ID: 41
+		}, {
+			ID: 42
+		}, {
+			ID: 43
+		}, {
+			ID: 44
+		}, {
+			ID: 56
+		}, {
+			ID: 57
+		}, {
+			ID: 72
+		}, {
+			ID: 73
+		}, {
+			ID: 74
+		}, {
+			ID: 77
+		}, {
+			ID: 84
+		}, {
+			ID: 85
+		}, {
+			ID: 86
+		}, {
+			ID: 90
+		}, {
+			ID: 91
+		}]
+	},
+	dialogue: [{
+		face: 2,
+		anim: 2,
+		text: "A good job. You are a model W12-4RD.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 0,
+		anim: 2,
+		text: "Set your automators to maximum accomplishment? (are you ready?)",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 4,
+		text: "Greetings, coggle. Are you here to enter the Robolympics?",
+		audio: TechZone.AUDIO[0]
+	}, {
+		face: 4,
+		anim: 4,
+		text: "If so, what kind of robot are you?",
+		audio: TechZone.AUDIO[0]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "...",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You're a wizard, you say? Interesting. I though they stopped making the W12-4RD model coggle. You're a relic!",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "Whatever you are, welcome to the TECH CITY!",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You look confused, W12-4RD. No matter. Defeat some coggles for me, and I will explain everything.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You are strong for a W12-4RD. Strong enough for the Robolympics.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "I used to run the Wheel of Wonder service, but not anymore. Wheeler took over for me.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "Well, since you helped me out, I will only charge you one LAK.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You do not have even ONE LAK? Very well. Defeat some ???, they often carry them.",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You are now officially in the Tech Zone, the greatest competition for robots on the island!",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "The coggles (robots) live here in the TECH CITY, and hold the tournament every year. And the strongest coggle wins the GRAND PRIZE!",
+		audio: TechZone.AUDIO[1]
+	}, {
+		face: 4,
+		anim: 0,
+		text: "You will have many challenges to face. The first starts now - defeat whatever you face.",
+		audio: TechZone.AUDIO[1]
+	}],
+	quests: [{
+		coords: [110, 0],
+		name: "They Are Coming",
+		desc: "The Skywatch is under attack! Defeat the incoming hobs!",
+		start: [2, 3, 4],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 84
+		}],
+		req: [{
+			type: "pet",
+			ID: 84,
+			N: 2
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [0, 75],
+		name: "The Sky is Falling!",
+		desc: "Look for spare parts to repair the station. Luminites should carry them.",
+		start: [5],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 20,
+			drops: [{
+				ID: 49,
+				type: "item",
+				R: 1
+			}]
+		}],
+		req: [{
+			type: "item",
+			ID: 49,
+			N: 3
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [110, 110],
+		name: "Tech TRIALS",
+		desc: "Defeat cloud nibblers for Cumulo to pass the first trial.",
+		start: [6, 7, 8, 9, 10, 11, 12],
+		during: [],
+		complete: [13],
+		encounter: [{
+			ID: 56,
+			R: 1
+		}],
+		req: [{
+			type: "pet",
+			ID: 56,
+			N: 3
+		}],
+		reward: [{
+			type: "spell",
+			ID: 37
+		}]
+	}, {
+		coords: [225, 60],
+		name: "Vandals and Thieves",
+		desc: "Cumulo needs you to track down the hobs that stole the parts to the station.",
+		start: [14, 15, 16],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 84,
+			nickname: "Part-carrying hob",
+			R: 1,
+			drops: [{
+				ID: 47,
+				type: "item",
+				R: 1
+			}]
+		}, {
+			ID: 84
+		}, {
+			ID: 20
+		}],
+		req: [{
+			type: "item",
+			ID: 47,
+			N: 3
+		}],
+		reward: [{
+			type: "boots",
+			N: 1,
+			ID: 25
+		}]
+	}, {
+		coords: [335, 0],
+		name: "Wrench in the Gears",
+		desc: "You'll need a wrench to fix the station. Defeat cloud neeks and take their tools.",
+		start: [17],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 72,
+			R: .75,
+			drops: [{
+				ID: 53,
+				type: "item",
+				R: .25
+			}]
+		}, {
+			ID: 84,
+			R: .25
+		}],
+		req: [{
+			type: "item",
+			ID: 53,
+			N: 1
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [450, 75],
+		name: "Head Hob",
+		desc: "Defeat the leader of the hobs and take back the power source.",
+		start: [18, 19],
+		during: [],
+		complete: [13],
+		pets: [{
+			ID: 85,
+			nickname: "Hob Leader"
+		}, {
+			ID: 84,
+			nickname: "Grunt Hob"
+		}, {
+			ID: 84,
+			nickname: "Grunt Hob"
+		}],
+		req: [{
+			type: "boss",
+			N: 1
+		}],
+		reward: [{
+			type: "spell",
+			ID: 38
+		}]
+	}, {
+		coords: [335, 110],
+		name: "The Birds",
+		desc: "Cumulo needs you to go defeat birds, 'cause they're messin' up the place!",
+		start: [14, 20, 21],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 13,
+			R: 5
+		}, {
+			ID: 4,
+			R: 1
+		}],
+		req: [{
+			type: "pet",
+			ID: 13,
+			N: 5
+		}, {
+			type: "pet",
+			ID: 4,
+			N: 2
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [335, 190],
+		name: "Bird is the Word",
+		desc: "According to Cumulo, squawks are the worst. Go defeat them!",
+		start: [22],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 18,
+			R: 4
+		}, {
+			ID: 72,
+			R: 2
+		}, {
+			ID: 85,
+			R: 1
+		}],
+		req: [{
+			type: "pet",
+			ID: 18,
+			N: 6
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [450, 225],
+		name: "Big Bird",
+		desc: "All your bird-challenging has caught the attention of the bird leader!",
+		start: [23],
+		during: [],
+		complete: [13],
+		encounter: [{
+			ID: 42,
+			R: 1,
+			nickname: "Big Bird"
+		}, {
+			ID: 41,
+			R: 9
+		}],
+		req: [{
+			type: "pet",
+			ID: 42,
+			N: 1
+		}],
+		reward: [{
+			type: "spell",
+			ID: 39
+		}]
+	}, {
+		coords: [335, 300],
+		name: "I Have the Power!",
+		desc: "To build a lightning rod, first you need to collect a green feather from an evolotus.",
+		start: [24, 25],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 43,
+			R: 2,
+			drops: [{
+				ID: 10,
+				type: "item",
+				R: .15
+			}]
+		}, {
+			ID: 72,
+			R: 1
+		}, {
+			ID: 84,
+			R: 1
+		}],
+		req: [{
+			type: "item",
+			ID: 10,
+			N: 1
+		}],
+		reward: [{
+			type: "hat",
+			N: 1,
+			ID: 8
+		}]
+	}, {
+		coords: [225, 240],
+		name: "Rod! Rod! Rod!",
+		desc: "Defeat monsters that have hands in order to collect a steel rod.",
+		start: [26],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 84,
+			R: 1,
+			drops: [{
+				ID: 52,
+				type: "item",
+				R: .2
+			}]
+		}, {
+			ID: 85,
+			R: 1,
+			drops: [{
+				ID: 52,
+				type: "item",
+				R: .25
+			}]
+		}, {
+			ID: 72,
+			R: 1,
+			drops: [{
+				ID: 52,
+				type: "item",
+				R: .2
+			}]
+		}, {
+			ID: 14,
+			R: 1
+		}, {
+			ID: 41,
+			R: 1
+		}],
+		req: [{
+			type: "item",
+			ID: 52,
+			N: 1
+		}],
+		reward: [{
+			type: "gold",
+			N: 250
+		}]
+	}, {
+		coords: [110, 300],
+		name: "Popular Mechanic",
+		desc: "Look for Mechanic Lumiot and defeat him.",
+		start: [27, 28],
+		during: [],
+		complete: [13],
+		encounter: [{
+			ID: 21,
+			nickname: "Mechanic Lumiot",
+			R: 1
+		}, {
+			ID: 20,
+			R: 3
+		}, {
+			ID: 13,
+			R: 3
+		}, {
+			ID: 56,
+			R: 3
+		}, {
+			ID: 41,
+			R: 3
+		}],
+		req: [{
+			type: "pet",
+			ID: 21,
+			N: 1
+		}],
+		reward: [{
+			type: "spell",
+			ID: 40
+		}]
+	}, {
+		coords: [0, 225],
+		name: "Who's in Charge?",
+		desc: "Find and defeat a cloaker, and collect its charge stone.",
+		start: [29, 30, 31],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 90,
+			R: 1,
+			drops: [{
+				ID: 54,
+				type: "item",
+				R: 1
+			}]
+		}, {
+			ID: 56,
+			R: 3
+		}, {
+			ID: 5,
+			R: 1
+		}, {
+			ID: 85,
+			R: 3
+		}, {
+			ID: 4,
+			R: 3
+		}],
+		req: [{
+			type: "item",
+			ID: 54,
+			N: 1
+		}],
+		reward: [{
+			type: "outfit",
+			N: 1,
+			ID: 5
+		}]
+	}, {
+		coords: [110, 190],
+		name: "Stormy Weather",
+		desc: "Defeat different storm monsters to charge the stone.",
+		start: [32],
+		during: [],
+		complete: [0],
+		encounter: [{
+			ID: 15,
+			R: 3
+		}, {
+			ID: 21,
+			R: 3
+		}, {
+			ID: 57,
+			R: 3
+		}],
+		req: [{
+			type: "pet",
+			ID: 21,
+			N: 2
+		}, {
+			type: "pet",
+			ID: 57,
+			N: 3
+		}],
+		reward: [{
+			type: "weapon",
+			N: 1,
+			ID: 23
+		}]
+	}, {
+		coords: [225, 150],
+		name: "King of the Hill",
+		desc: "Defeat The Forest Guardian and complete the last trial!",
+		start: [33, 34],
+		during: [35],
+		complete: [13, 36, 37, 38],
+		boss: {
+			ID: 6,
+			element: "wizard",
+			attacks: [31, 32, 33, 34, 35, 36],
+			name: "Forest Guardian"
+		},
+		req: [{
+			type: "boss",
+			N: 1
+		}],
+		reward: [{
+			type: "spell",
+			ID: 41
+		}]
+	}]
+};
+var Arena = function () {
+	function e(t) {
+		WalkableScreen.call(this, t, e.DATA), this.assets = ["npc-sprite-clankboot", "npc-sprite-merchant", "tileset-core"], this.area = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], this.playerX = 890, this.playerY = 260, this.bgm = "bgm-intro"
+	}
+	return e.prototype = Object.create(WalkableScreen.prototype), e.prototype.create = function () {
+		WalkableScreen.prototype.create.call(this, [], "town-2")
 	}, e.prototype.screenSetup = function () {
 		WalkableScreen.prototype.screenSetup.call(this), this.path.addCallback(3, this.toTown.bind(this)), this.createStoreNPC(944, 376, e.STORE), this.digBtn = this.game.prodigy.create.element(this.content, 1110, 280);
 		var t = this.digBtn.add(this.game.prodigy.create.sprite(40, 40, "icons", "star2"));
@@ -75643,9 +76368,9 @@ var Arena = function () {
 		}, 1e3, Phaser.Easing.Quadratic.InOut, !0, 0, Number.MAX_VALUE, !0);
 		var i = this.game.prodigy.create.sprite(437, 462, this.screenName, "vase");
 		i.anchor.setTo(.5, 1), this.content.add(i), new Prodigy.Container.QuestNPC(this.game, this.content, 310, 400, e.DATA, {
-			name: "M. Stache",
-			atlas: "stache"
-		}, this.openArena.bind(this));
+			name: "Clankboot",
+			atlas: "clankboot"
+		}, this.openArena.bind(this), !0);
 		var a = [{
 			pre: "Duelist ",
 			member: !0,
@@ -75676,7 +76401,7 @@ var Arena = function () {
 		var t = e.DATA.dialogue[0];
 		t.yes = this.game.prodigy.open.arena.bind(this.game.prodigy.open);
 		var i = this.game.prodigy.dialogue.create();
-		i.setText(t), i.start("stache")
+		i.setText(t), i.start("clankboot")
 	}, e.prototype.toPlains = function () {
 		this.game.prodigy.world.teleport("pirate-0")
 	}, e.prototype.toTech = function () {
@@ -75991,28 +76716,12 @@ Arena.STORE = {
 		}]
 	}]
 }, Arena.AUDIO = [{
-	tag: "voice-4",
+	tag: "voice-3",
 	s: 0,
-	d: 2
-}, {
-	tag: "voice-4",
-	s: 2,
-	d: 1
-}, {
-	tag: "voice-4",
-	s: 3,
-	d: 1
-}, {
-	tag: "voice-4",
-	s: 4,
-	d: 2
-}, {
-	tag: "voice-4",
-	s: 6,
 	d: 1
 }], Arena.DATA = {
 	ID: 10,
-	tag: "arena-0",
+	tag: "town-2",
 	zoneName: "zone-arena",
 	atlas: "zone-arena",
 	fullName: "Coliseum",
@@ -76075,8 +76784,8 @@ Arena.STORE = {
 		}]
 	},
 	dialogue: [{
-		face: 2,
-		anim: 2,
+		face: 0,
+		anim: 4,
 		text: "Do you want to train in the arena?",
 		audio: Arena.AUDIO[0]
 	}, {
@@ -81876,7 +82585,7 @@ Prodigy.Controller.BattleController = function(e) {
 	createAccount: function(e, t) {
 		this.menus.push(new Prodigy.Menu.AccountCreate(this.game, this.menuLayer, e, t))
 	},
-	server: function(e, t) {
+	server: function (e, t) {
 		this.menus.push(new Prodigy.Menu.Server(this.game, this.menuLayer, e, t))
 	},
 	houseEditorHUD: function(e, t, i, a, s) {
@@ -82904,6 +83613,7 @@ Prodigy.GameObj = function(e) {
 	this.updateCount = 0,
 	this.debug = new Prodigy.Debug(e),
 	this.old = new OldProdigy(e),
+	this.mpWorlds = new MultiplayerWorlds(e),
 	Util.log(this.version, Util.INFO),
 	Util.log(this.version2, Util.INFO),
 	Prodigy.Lodash.VERSION !== GameConstants.get("GameConstants.Build.LODASH_VERSION") && Util.log("LODASH VERSION CHANGED", Util.ERROR)
@@ -84515,9 +85225,9 @@ var NetworkManager = function() {
 	}, e.prototype.log = function(e, t) {
 		Util.isDefined(this.player) && (t.userID = this.player.userID), Util.log("MSG = debug, " + e + ", " + JSON.stringify(t)), this.api.log("debug", e, t)
 	}, e.prototype.initBoot = function() {
-		-1 === this.bootCount && this.loggedIn && (this.bootCount = (new Date).getTime() + 7e4, this.bootMsg = "Prodigy is going offline, and you will be logged off in ")
+		-1 === this.bootCount && this.game.prodigy.old.signedIn && (this.bootCount = (new Date).getTime() + 7e4, this.bootMsg = "Prodigy is going offline, and you will be logged off in ")
 	}, e.prototype.onError = function(e, t, i) {
-		Util.log("FAIL : " + e + " , " + t + ", " + i), !Util.isDefined(this.updateFailedTime) && this.loggedIn && Util.isDefined(e) && -1 !== e.indexOf("update") && (this.updateFailedTime = (new Date).getTime(), Util.log("logout countdown"))
+		Util.log("FAIL : " + e + " , " + t + ", " + i), !Util.isDefined(this.updateFailedTime) && this.game.prodigy.old.signedIn && Util.isDefined(e) && -1 !== e.indexOf("update") && (this.updateFailedTime = (new Date).getTime(), Util.log("logout countdown"))
 	}, e.prototype.getCharData = function(e, t, i, a) {
 		Util.isDefined(a) || (a = function() {}), Util.isDefined(i) || (i = function() {}), this.api.getUser(e, t, {
 			200: i,
@@ -84542,9 +85252,9 @@ var NetworkManager = function() {
 			409: s,
 			500: s
 		})
-	}, e.prototype.canUseMP = function() {
-		return this.loggedIn && this.socketConnected && Util.isDefined(this.zone)
-	}, e.prototype.getWorldList = function(e, t) {
+	}, e.prototype.canUseMP = function () {
+		return this.game.prodigy.old.signedIn && this.socketConnected && Util.isDefined(this.zone)
+	}, e.prototype.getWorldList = function (e, t) {
 		this.api.getWorldList({
 			200: e,
 			400: t,
@@ -84965,7 +85675,7 @@ var NetworkManager = function() {
 			0: i
 		})
 	}, e.prototype.updateCharacter = function() {}, e.prototype.processUpdate = function(e, t, i) {
-		return this.saving = !1, this.sendAnalytics("Player-Alive", "", "Login-Events"), "versionError" === t ? void this.versionError() : (e || (!Util.isDefined(this.updateFailedTime) && this.loggedIn && (this.updateFailedTime = (new Date).getTime()), t && -1 === this.bootCount && this.loggedIn && (this.bootMsg = "You have logged in elsewhere...you will be logged off in ", this.bootCount = (new Date).getTime() + 5e3), Util.log("network update fail"), this.hasFailedUpdate = !0), e && (delete this._forceUpdate, i === this.saveCallback && delete this.saveCallback, Util.isDefined(i) && i(), this.updateFailedTime = null, this.lastUpdate = (new Date).getTime(), this.processFriendsList = this.hasFailedUpdate, this.hasFailedUpdate = !1), void(this.processPlayer = !e))
+		return this.saving = !1, this.sendAnalytics("Player-Alive", "", "Login-Events"), "versionError" === t ? void this.versionError() : (e || (!Util.isDefined(this.updateFailedTime) && this.game.prodigy.old.signedIn && (this.updateFailedTime = (new Date).getTime()), t && -1 === this.bootCount && this.game.prodigy.old.signedIn && (this.bootMsg = "You have logged in elsewhere...you will be logged off in ", this.bootCount = (new Date).getTime() + 5e3), Util.log("network update fail"), this.hasFailedUpdate = !0), e && (delete this._forceUpdate, i === this.saveCallback && delete this.saveCallback, Util.isDefined(i) && i(), this.updateFailedTime = null, this.lastUpdate = (new Date).getTime(), this.processFriendsList = this.hasFailedUpdate, this.hasFailedUpdate = !1), void(this.processPlayer = !e))
 	}, e
 }();
 Prodigy.NetworkHandlers.NetworkHandler = function(e) {
@@ -85191,7 +85901,7 @@ Prodigy.NetworkHandlers.NetworkHandler = function(e) {
 	}
 });
 /*
-	You're welcome, XPMUser ;)
+	You're welcome, Ao28th28 ;)
 			
 	DABOSS WAS HERE ༼ つ ◕◡◕ ༽つ 
 			
@@ -85404,6 +86114,7 @@ class OldProdigy {
 			deleteUser()
         }).catch(handleDatabaseError)
     }
+    
 	// Checks if the player still has an active Google session.
 	getCurrentSession(callback) {
         var self = this;
@@ -85425,3 +86136,264 @@ class OldProdigy {
         })
     }
 }
+;(function () {
+	if (!window.Prodigy?.Menu?.Server) return;
+
+	const originalClick = Prodigy.Menu.Server.handleClick;
+	Prodigy.Menu.Server.handleClick = function (server) {
+		console.log("🌐 Patching server connect for:", server);
+
+		const game = this.game;
+		const prodigy = game.prodigy;
+
+		// Save zone before transition
+		const currentZone = prodigy.zone.id;
+
+		// Set multiplayer connection
+		prodigy.player.isOffline = false;
+		prodigy.client.uniqueKey = prodigy.player.token;
+		this.game.prodigy.player.userID = prodigy.player.userID;
+
+		// Load same zone but connect to new server
+		prodigy.multiplayer.start(server.path, () => {
+			prodigy.zone.set(currentZone);
+			console.log("✅ Connected to new multiplayer server:", server.path);
+		});
+	};
+
+	console.log("✅ Patched server selector to preserve zone + connect online.");
+})();
+// You would add this class definition directly into your game.min.js file.
+
+// Add this class definition to your game.min.js file, or a similar core game script.
+
+/**
+ * @class MultiplayerWorlds
+ * @description Manages the logic for fetching available game worlds and connecting to them.
+ * This class encapsulates network requests, UI feedback, and game state updates related
+ * to multiplayer connectivity, providing a clean interface for world management.
+ *
+ * @param {object} game - A reference to the main game object (e.g., `Prodigy.game`).
+ * Expected to contain:
+ * - `apiClient`: An instance of your game's API client with a `get` method.
+ * - `prodigy.player`: Player data including `isOffline`, `userID`, `token`, `currentZoneId`.
+ * - `prodigy.zones`: Game zones data for player list updates.
+ * - `prodigy.client`: Game client data, possibly with `sendPlayerCoords`.
+ * @param {object} ui - An object containing references to various UI elements and methods for feedback.
+ * Expected to contain:
+ * - `showLoading()`: Function to display a general loading overlay.
+ * - `hideLoading()`: Function to hide the general loading overlay.
+ * - `showSpinner()`: Function to display a loading spinner.
+ * - `hideSpinner()`: Function to hide the loading spinner.
+ * - `statusMessage.setText(message)`: Method to update a status message display.
+ * @param {object} Util - A reference to the global `Util` utility object.
+ * Expected to contain:
+ * - `log(message, level)`: For logging messages.
+ * - `isDefined(value)`: For checking if a value is defined.
+ * - `ERROR`, `INFO`, `WARN`: Log levels.
+ */
+class MultiplayerWorlds {
+    constructor(game, ui, Util) {
+        if (!game || !game.apiClient || typeof game.apiClient.get !== 'function') {
+            console.error("MultiplayerWorlds: 'game.apiClient' is missing or invalid. Cannot initialize.");
+            return;
+        }
+        // Assuming 'ui' and 'Util' are properly passed and have required methods/properties
+        // Simplified validation for brevity.
+        this.game = game;
+        this.ui = ui; // Assuming ui has showLoading, hideLoading, showSpinner, hideSpinner, statusMessage.setText
+        this.Util = Util;
+        this.loadingIntervalId = null;
+    }
+
+    _showLoadingState(message) { /* ... (existing implementation) ... */ }
+    _hideLoadingState() { /* ... (existing implementation) ... */ }
+    getWorldList() { /* ... (existing implementation) ... */ }
+
+    /**
+     * Initiates a connection to a specific multiplayer server/world.
+     * This will now trigger the client-side world teleport upon success.
+     * @param {string} targetServerUrl - The base URL/path of the target multiplayer server (e.g., "/worlds/fireplane").
+     * @param {function} onConnectCb - Callback fired after successful connection and initial zone teleport.
+     * @returns {Promise<object>} A promise that resolves with the server response or rejects with an error.
+     */
+    start(targetServerUrl, onConnectCb) {
+        return new Promise((resolve, reject) => {
+            this.Util.log(`Attempting to start multiplayer session with: ${targetServerUrl}`, this.Util.INFO);
+            this._showLoadingState("Connecting to multiplayer world...");
+
+            const worldId = this._getWorldIdFromUrl(targetServerUrl);
+            const worldInfo = { id: worldId }; // Prepare worldInfo object as expected by ApiClient.joinMultiplayerServer
+
+            // Call the ApiClient's method to establish the Socket.IO connection
+            this.game.apiClient.joinMultiplayerServer(
+                worldInfo,
+                "zone-login", // Initial clientZone for connection setup
+                {
+                    "200": (response) => { // This `response` now contains `zoneId` from server ack!
+                        this.Util.log("Successfully joined multiplayer server!", this.Util.INFO);
+                        this._hideLoadingState();
+
+                        // ⭐ CRITICAL: Use the actual initial zone from the server's response.
+                        // Fallback to a client-side default if the server doesn't provide it.
+                        const initialZone = response && response.zoneId ? response.zoneId :
+                                            this._getDefaultZoneForWorld(worldId);
+
+                        // Perform the client-side teleport to the determined initial zone
+                        if (this.game.prodigy && this.game.prodigy.world && typeof this.game.prodigy.world.teleport === 'function') {
+                            this.game.prodigy.world.teleport(initialZone);
+                            this.Util.log(`Teleported client to multiplayer zone: ${initialZone}`, this.Util.INFO);
+                        } else {
+                            this.Util.error("Client-side world teleport function (this.game.prodigy.world.teleport) not found or not ready.");
+                        }
+
+                        if (onConnectCb && typeof onConnectCb === 'function') {
+                            onConnectCb(initialZone); // Pass the actual zone to the callback
+                        }
+                        resolve(response);
+                    },
+                    "500": (error) => {
+                        this._hideLoadingState();
+                        this.Util.error("Failed to connect to multiplayer server:", error, this.Util.ERROR);
+                        this.ui.statusMessage.setText("Connection failed. Please try again.");
+                        reject(error);
+                    },
+                    // You might have other callbacks like "503" for "world full" here
+                    // if your ApiClient's joinMultiplayerServer can handle them.
+                },
+                // Pass other real-time Socket.IO event callbacks (onMessage, onPlayerList, etc.)
+                (msg) => this.Util.log("Socket Message:", msg),
+                (players) => this.Util.log("Initial Players:", players),
+                (reason) => this.Util.warn("Socket Disconnected:", reason),
+                (player) => this.Util.log("Player Joined:", player),
+                (player) => this.Util.log("Player Left:", player)
+            );
+        });
+    }
+
+    /**
+     * Helper to extract world ID from a server URL/path.
+     * Assumes format like "/worlds/fireplane" -> "fireplane"
+     * @private
+     * @param {string} serverPath
+     * @returns {string}
+     */
+    _getWorldIdFromUrl(serverPath) {
+        const parts = serverPath.split('/');
+        return parts[parts.length - 1];
+    }
+
+    /**
+     * Provides a default starting zone for a given world ID if the server doesn't specify one.
+     * This is a client-side fallback.
+     * @private
+     * @param {string} worldId
+     * @returns {string} The default zone ID.
+     */
+    _getDefaultZoneForWorld(worldId) {
+        // You should expand this mapping based on your game's worlds and their actual starting zones.
+        switch (worldId) {
+            case "fireplane": return "fireplane-start";
+            case "icecaverns": return "icecaverns-start";
+            case "skywatch": return "skywatch-b1"; // Example from your game's map data
+            case "lamplight": return "lamplight-b1"; // Example from your game's map data
+            // Add more specific world-to-zone mappings here
+            default: return worldId + "-start"; // Generic fallback (e.g., "forest-start")
+        }
+    }
+}
+
+
+// --- Section 3: Fix the Prodigy.Menu.Server.handleClick patch ---
+// This patch needs to be simplified to just initiate the connection
+// via `prodigy.multiplayer.start` and let that class handle the teleport.
+// Locate this immediately after the `MultiplayerWorlds` class definition.
+
+;(function () {
+    if (!window.Prodigy?.Menu?.Server) return;
+    const originalClick = Prodigy.Menu.Server.handleClick;
+
+    // ⭐ REVISED PATCH: Simplified handleClick to properly use MultiplayerWorlds ⭐
+    Prodigy.Menu.Server.handleClick = function (server) {
+        console.log("🌐 Initiating multiplayer connection for server:", server);
+        const game = this.game;
+        const prodigy = game.prodigy;
+
+        // Ensure prodigy.multiplayer is initialized (it should be set up globally or passed)
+        if (!prodigy.multiplayer) {
+            // Placeholder: In a real game, ensure MultiplayerWorlds is instantiated early.
+            // For now, if not found, create a dummy or log an error.
+            console.error("Prodigy.multiplayer is not initialized. Cannot connect to server.");
+            // You might want to show a user-facing error message here.
+            return;
+        }
+
+        // Set player status to online/multiplayer mode
+        prodigy.player.isOffline = false;
+        prodigy.client.uniqueKey = prodigy.player.token; // Ensure this is the most current token
+        prodigy.player.userID = prodigy.player.userID;   // Ensure this is the most current userID
+
+        // Start the multiplayer connection process.
+        // The `MultiplayerWorlds.start` method will now handle the teleport
+        // to the correct zone upon a successful connection.
+        prodigy.multiplayer.start(server.path, (actualZoneTeleportedTo) => {
+            console.log(`✅ Successfully connected and client teleported to zone: ${actualZoneTeleportedTo}`);
+            // Any further UI adjustments or game state logic *after* teleport
+            // (e.g., showing in-game multiplayer HUD elements) can go here.
+        }).catch(error => {
+            console.error("❌ Multiplayer connection failed in server selection:", error);
+            // Assuming Prodigy.Menu.Server has a method to show errors to the user.
+            if (this.showError) {
+                this.showError("Failed to join world. Please try again.");
+            }
+        });
+    };
+    console.log("✅ Patched Prodigy.Menu.Server.handleClick to properly use MultiplayerWorlds for connection.");
+})();
+// ... (Your existing function Util() {}) ...
+// ... (Your existing function Device() {}) ...
+
+// ... (Your existing function ApiClient(e, t) { /* ... */ }) ...
+
+// ⭐ PATCH START: Ensure Prodigy.game.apiClient is initialized AND populated with user data ⭐
+(function() {
+    if (typeof window.Prodigy === 'undefined') { window.Prodigy = {}; }
+    if (typeof window.Prodigy.game === 'undefined') { window.Prodigy.game = {}; }
+    if (typeof window.Prodigy.game.prodigy === 'undefined') {
+        window.Prodigy.game.prodigy = { client: {}, player: {} };
+    } else if (typeof window.Prodigy.game.prodigy.client === 'undefined') {
+        window.Prodigy.game.prodigy.client = {};
+    }
+    if (typeof window.Prodigy.game.prodigy.player === 'undefined') {
+        window.Prodigy.game.prodigy.player = {};
+    }
+
+    if (!window.Prodigy.game.apiClient || typeof window.Prodigy.game.apiClient.get !== 'function') {
+        try {
+            window.Prodigy.game.apiClient = new ApiClient(
+                window.Prodigy.game.prodigy,
+                { root: "/game-api/" }
+            );
+            Util.log("⭐ PATCH SUCCESS: Prodigy.game.apiClient initialized.", Util.INFO);
+        } catch (error) {
+            Util.error("⭐ PATCH ERROR: Failed to initialize Prodigy.game.apiClient:", error);
+        }
+    }
+
+    // ⭐ CRITICAL NEW ADDITION: Propagate uniqueKey and userID to ApiClient instance ⭐
+    // This runs AFTER ApiClient is potentially initialized, ensuring it has the latest credentials.
+    if (window.Prodigy.game.apiClient && window.Prodigy.game.prodigy.player) {
+        // Assign directly to ApiClient instance properties.
+        window.Prodigy.game.apiClient.uniqueKey = window.Prodigy.game.prodigy.player.token;
+        window.Prodigy.game.apiClient.userID = window.Prodigy.game.prodigy.player.userID;
+
+        if (window.Prodigy.game.prodigy.player.token && typeof window.Prodigy.game.prodigy.uniqueKey === 'undefined') {
+             window.Prodigy.game.prodigy.uniqueKey = window.Prodigy.game.prodigy.player.token;
+        }
+
+        Util.log(`⭐ PATCH INFO: ApiClient credentials updated: UserID=${window.Prodigy.game.apiClient.userID || 'N/A'}, AuthKey=${window.Prodigy.game.apiClient.uniqueKey ? 'PRESENT' : 'MISSING'}.`, Util.INFO);
+    }
+})();
+// ⭐ PATCH END ⭐
+
+// ... (The rest of your game.min.js file continues here) ...
