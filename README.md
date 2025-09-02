@@ -5,4 +5,4 @@ Old Prodigy is for historical purposes.
 
 # Update on multiplayer for pde1500
 
-It's cancelled for now.
+It's not cancelled fuckers! so stfu!
