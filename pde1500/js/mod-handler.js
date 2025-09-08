@@ -430,7 +430,7 @@ class ModHandler {
 	}
 	initClassicFaceMod() {
 		var assets = this.game.prodigy.assets._assets;
-		assets.heads.base = "https://xpmuser.github.io/oldprodigy/1-50-0/images/";
+		assets.heads.base = "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/1-50-0/images/";
 		assets.heads.type = "localAtlas";
 		assets.heads.key = "general-mod-head";
 		Prodigy.Container.PlayerContainer.getAssets = function (e, t, i, a) {
@@ -501,4 +501,5 @@ function checkForMods(e, t) {
 			ModHooks.error('Error occured while applying mod "' + GameMods.available[a].id + '" to Prodigy!'), console.error(e)
 		}
 	i > 0 ? ModHooks.log("Applied (" + i + ") mods to the game") : ModHooks.log("No mods have been applied")
+
 }
