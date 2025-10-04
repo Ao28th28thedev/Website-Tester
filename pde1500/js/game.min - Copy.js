@@ -82,15 +82,15 @@ var c = {
 },
 		// ⭐ MODIFIED: Base URLs for HTTP API to point to your Render server ⭐
 		g = {
-			dev: "https://prodidows-server.onrender.com/",
-			staging: "https://prodidows-server.onrender.com/",
-			production: "https://prodidows-server.onrender.com/"
+			dev: "https://definitive-edition-backend.onrender.com/",
+			staging: "https://definitive-edition-backend.onrender.com/",
+			production: "https://definitive-edition-backend.onrender.com/"
 		},
 		// ⭐ MODIFIED: Base URLs for WebSocket (Socket.IO) API to point to your Render server ⭐
 		u = {
-			dev: "ws://prodidows-server.onrender.com/",
-			staging: "ws://prodidows-server.onrender.com/",
-			production: "ws://prodidows-server.onrender.com/"
+			dev: "wss://definitive-edition-backend.onrender.com/",
+			staging: "wss://definitive-edition-backend.onrender.com/",
+			production: "wss://definitive-edition-backend.onrender.com/"
 		},
 		y = "game-api/",
 		m = "leaderboard-api/",
@@ -184,7 +184,7 @@ switch (window.location.host) {
 	}, this.getWorldList = function (e) {
 		var t = n(e, ["200", "400", "500", "503"], "get world list");
 		if (t) {
-			var i = "v2/worlds",
+			var i = "worlds-api/world-list.json",
 				s = c.root + i;
 			return a("get", s, {}, t, "getWorldList", {
 				ignoreHeaders: !0
@@ -30219,7 +30219,7 @@ Util.capitalize = function(e) {
 	}, {
 		text: "If you sign in with Google, your progess will be saved right away and automatically. :D"
 	}, {
-		text: "If you want to find bots (wizards) in Shapes, Inc, then search for the bot's name."
+		text: "If you want to find bots (wizards) in character.ai, then search for the bot's name."
 	}, {
 		text: "If you want to be a premium member, click on the gear icon and then click on the member button."
 	}, {
@@ -30812,7 +30812,7 @@ Items.getItemData = function(e, t) {
 		rarity: 2,
 		drop: 1,
 		flavorText: "The Pumpkin Lord is said to return every year on Pumpkinfest to rule over all pumpkins.",
-		effects: [35]
+		effects: [88]
 	}, {
 		ID: 45,
 		name: "Luminite Costume",
@@ -45383,7 +45383,7 @@ Prodigy.ForestBoss = function(e, t) {
 	},
 	onMembershipButtonClick: function(e) {
 		try {
-			this.game.prodigy.network.openWebsite("shapes.inc/explore")
+			this.game.prodigy.network.openWebsite("character.ai")
 		} catch (a) {
 			this.game.prodigy.open.message("There was an error contacting our server. Please try again later.")
 		}
@@ -45683,7 +45683,7 @@ Prodigy.ForestBoss = function(e, t) {
 		}];
 		this.createBaseSetup(30, 16, "shine", "AWARDS", t, !0);
 		var i = this.game.prodigy.create.element(this, 0, 0);
-		i.setRenderState(!0), i.add(new Phaser.TileSprite(this.game, 51, 220, 1178, 40, "core", "blue-top")), i.add(new Phaser.TileSprite(this.game, 51, 260, 1178, 340, "core", "blue-mid")), i.add(new Phaser.TileSprite(this.game, 51, 600, 1178, 40, "core", "blue-top2")), Prodigy.RenderMenu.prototype.create.call(this), this.setMode(e);
+		i.setRenderState(!0), i.add(new Phaser.TileSprite(this.game, 51, 220, 1178, 40, "core", "stat-top")), i.add(new Phaser.TileSprite(this.game, 51, 260, 1178, 340, "core", "blue-mid")), i.add(new Phaser.TileSprite(this.game, 51, 600, 1178, 40, "core", "")), Prodigy.RenderMenu.prototype.create.call(this), this.setMode(e);
 		for (var a = 0; a < t.length; a++) {
 			var s = t[a];
 			if (s.hasIndicator) {
@@ -47283,7 +47283,7 @@ Prodigy.ForestBoss = function(e, t) {
 			if (n === Prodigy.Events.FriendsList.REMOVE_FRIEND) {
 				var e = Util.isDefined(this.player.appearance.data.nick) && "" !== this.player.appearance.data.nick ? this.player.appearance.data.nick : this.player.appearance.data.name;
 				this.game.prodigy.open.confirm("Are you sure you want to remove " + e + " from your friends list?", this.game.broadcaster.broadcast.bind(this.game.broadcaster, n, "Card", [this.player.userID]), null, null, "Removing Friend")
-			} else this.game.prodigy.network.openWebsite("shapes.inc/create")
+			} else this.game.prodigy.network.openWebsite("character.ai/character/new")
 		}).bind(this);
 		Util.isDefined(e) && Util.isDefined(t) || (e = this.cmdFriendRequest.x, t = this.cmdFriendRequest.y), Util.isDefined(this.cmdFriendRequest) && this.cmdFriendRequest.destroy(), this.cmdFriendRequest = this.game.prodigy.create.advButton(this.base, e, t, {
 			atlas: "icons-menu",
@@ -49340,10 +49340,10 @@ Prodigy.ForestBoss = function(e, t) {
     opponent: {
         data: '{"level":100}',
         appearance: '{"name":"Forestwalker the Digger", "gender":"female", "hairStyle":4,"hairColor":10,"skinColor":1,"eyeColor":10}',
-        equipment: '{"hat":23, "outfit":53, "weapon":77, "boots":26}'
+        equipment: '{"hat":23, "outfit":52, "weapon":77, "boots":26}'
     },
-    title: "Ao28th28's another alt account from Daboss7173's PDE",
-    description: "She is #1 on the arena leaderboards in Daboss7173's PDE.",
+    title: "Ao28th28's alt account from Daboss7173's PDE",
+    description: "She is another one of Ao28th28's accounts in Daboss7173's PDE.",
 	pets: [{
                 ID: 126,
                 level: 100
@@ -49370,12 +49370,42 @@ Prodigy.ForestBoss = function(e, t) {
     }]
 }, {
     opponent: {
+        data: '{"level":100}',
+        appearance: '{"name":"Super Pilot", "gender":"female", "hairStyle":1,"hairColor":9,"skinColor":1,"eyeColor":11}',
+        equipment: '{"hat":23, "outfit":24, "weapon":68, "boots":18}'
+    },
+    title: "Ao28th28's another alt account from Daboss7173's PDE",
+    description: "She is another one of Ao28th28's accounts in Daboss7173's PDE.",
+	pets: [{
+                ID: 126,
+                level: 100
+	}],
+    drops: [{
+        type: "gold",
+        N: 10000
+    }]
+}, {
+    opponent: {
         data: '{"level":17}',
         appearance: '{"name":"Walter Diamondbreath", "gender":"male", "hairStyle":8,"hairColor":4,"skinColor":4,"eyeColor":8}',
         equipment: '{"hat":54, "outfit":1, "weapon":56, "boots":19}'
     },
     title: "Bot!",
     description: "Bot in pde1500!",
+    pets: [],
+    drops: [{
+        type: "gold",
+        N: 500
+    }]
+	/* Can you please make a female bot request in feature request since the order of coliseum opponents have to be by a gender order? */
+}, {
+    opponent: {
+        data: '{"level":50}',
+        appearance: '{"name":"Reena Stones", "gender":"female", "hairStyle":1,"hairColor":3,"skinColor":1,"eyeColor":3}',
+        equipment: '{"hat":44, "outfit":29, "weapon":56, "boots":10}'
+    },
+    title: "The heroic archeologist's sibling",
+    description: "Tad's little sister.",
     pets: [],
     drops: [{
         type: "gold",
@@ -49395,15 +49425,30 @@ Prodigy.ForestBoss = function(e, t) {
         type: "gold",
         N: 500
     }]
-	/* Can you please make a female bot request in feature request since the order of coliseum opponents have to be by a gender order? */
+}, {
+    opponent: {
+        data: '{"level":100}',
+        appearance: '{"name":"Flamewielder Trinity", "gender":"female", "hairStyle":5,"hairColor":4,"skinColor":1,"eyeColor":4}',
+        equipment: '{"hat":23, "outfit":53, "weapon":78, "boots":18}'
+    },
+    title: "Ao28th28's another alt account from Daboss7173's PDE",
+    description: "She is #1 on the arena leaderboards in Daboss7173's PDE.",
+	pets: [{
+                ID: 1,
+                level: 1
+	}],
+    drops: [{
+        type: "gold",
+        N: 10000
+    }]
 }, {
     opponent: {
         data: '{"level":100}',
         appearance: '{"name":"King of the Forest", "gender":"male", "hairStyle":4,"hairColor":4,"skinColor":3,"eyeColor":14}',
         equipment: '{"hat":80, "outfit":38, "weapon":68, "boots":26}'
     },
-    title: "Issac's character from Daboss7173's PDE",
-    description: "He's Ao28th28/Ao28th28's high school friend.",
+    title: "Ao28th28's friend Issac's character from Daboss7173's PDE",
+    description: "He's Ao28th28's high school friend.",
     pets: [],
     drops: [{
         type: "gold",
@@ -49425,6 +49470,22 @@ Prodigy.ForestBoss = function(e, t) {
 		type: "gold",
 		N: 500
 	}]
+}, {
+    opponent: {
+        data: '{"level":100}',
+        appearance: '{"name":"Ashley the Cool", "gender":"female", "hairStyle":4,"hairColor":6,"skinColor":1,"eyeColor":3}',
+        equipment: '{"hat":61, "outfit":52, "weapon":77, "boots":26}'
+    },
+    title: "Ao28th28's another alt account from Daboss7173's PDE",
+    description: "She is another one of Ao28th28's accounts in Daboss7173's PDE.",
+	pets: [{
+                ID: 1,
+                level: 1
+	}],
+    drops: [{
+        type: "gold",
+        N: 10000
+    }]
 }, {
     opponent: {
         data: '{"level":1}',
@@ -49501,6 +49562,31 @@ Prodigy.ForestBoss = function(e, t) {
     drops: [{
         type: "gold",
         N: 452
+    }]
+}, {
+    opponent: {
+        data: '{"level":100}',
+        appearance: '{"name":"Bobby the W12-4RD", "gender":"male", "hairStyle":4,"hairColor":2,"skinColor":1,"eyeColor":4}',
+        equipment: '{"hat":42, "outfit":38, "weapon":68, "boots":26}'
+    },
+    title: "Ton's wizard from Daboss7173's PDE",
+    description: "He is Ton's wizard in Daboss7173's PDE.",
+	pets: [{
+                ID: 39,
+                level: 37
+            }, {
+                ID: 36,
+                level: 12
+            }, {
+                ID: 130,
+                level: 47
+            }, {
+                ID: 3,
+                level: 45
+	}],
+    drops: [{
+        type: "gold",
+        N: 10000
     }]
 }], Prodigy.Menu.Nicknamer = function(e, t, i, a) {
 	Prodigy.Control.Menu.call(this, e, t, 18, {
@@ -50486,7 +50572,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	subject: "The friend feature's back in business!",
 	isOpened: !1,
 	image: "friends-list",
-	message: "Wanna make friends? You can chat and make friends in Shapes, Inc. Open the friend menu (looks like a member menu) and then click on the make ai friends now button!"
+	message: "Wanna make friends? You can chat and make friends in character.ai. Open the friend menu (looks like a member menu) and then click on the make ai friends now button!"
 }, {
 	id: 1,
 	subject: "Epic Spells can now be used multiple times!",
@@ -56202,7 +56288,7 @@ var Screen = function() {
 				this.game.prodigy.open.okaymessage("The load character button doesn't work on iPads. We suggest you use another device if you are an iPad user.", null, "star", "Warning!");
 			this.game.prodigy.debug.easyMode(1, 1), this.background.add(this.game.prodigy.create.sprite(0, 0, "login", "bg")), this.loginBox = this.game.prodigy.create.element(this.background), this.usernameField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "username", "", 90, 230, 300, 40), this.usernameField.hide(0), this.usernameField.setLabel(this.loginBox, "Prodigy version 1.50.0");
 			var e = Util.getCookie("prodigyUsername");
-			Util.isDefined(e) && this.usernameField.setValue(e), this.passwordField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "password", "", 90, 310, 300, 40, "password"), this.passwordField.hide(0), this.passwordField.setLabel(this.loginBox, "Definitive Edition version 23"), this.loadCharacterButton = this.game.prodigy.create.button(this.loginBox, 100, 380, "login", "loadcharacter", this.openFileForCharacter.bind(this)), this.offlineModeButton = this.game.prodigy.create.button(this.loginBox, 100, 470, "login", "google-signin-btn", this.onGoogleLoginButtonClick.bind(this)), this.progressBox = this.game.prodigy.create.element(this.background, 100, 250), this.error = this.game.prodigy.create.font(this.progressBox, 0, 0, "", {
+			Util.isDefined(e) && this.usernameField.setValue(e), this.passwordField = Prodigy.Control.InputField.createInputField(this.game, this.loginBox, "password", "", 90, 310, 300, 40, "password"), this.passwordField.hide(0), this.passwordField.setLabel(this.loginBox, "Definitive Edition version 24"), this.loadCharacterButton = this.game.prodigy.create.button(this.loginBox, 100, 380, "login", "loadcharacter", this.openFileForCharacter.bind(this)), this.offlineModeButton = this.game.prodigy.create.button(this.loginBox, 100, 470, "login", "google-signin-btn", this.onGoogleLoginButtonClick.bind(this)), this.progressBox = this.game.prodigy.create.element(this.background, 100, 250), this.error = this.game.prodigy.create.font(this.progressBox, 0, 0, "", {
 				width: 300,
 				align: "center"
 			}), this.closeButton = this.game.prodigy.create.textButton(this.progressBox, 0, 100, {
@@ -56215,7 +56301,7 @@ var Screen = function() {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/khZUgBfqRN")), (t = this.game.prodigy.create.panel(this.background, 350, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Go Back", {
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/EFqYQkkAYm")), (t = this.game.prodigy.create.panel(this.background, 350, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Go Back", {
 				size: 16,
 				width: 120,
 				align: "center"
@@ -56227,11 +56313,11 @@ var Screen = function() {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "www.youtube.com/@pde1500?sub_confirmation=1")), (t = this.game.prodigy.create.panel(this.background, 220, 620, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Chess Club", {
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "www.youtube.com/@pde1500?sub_confirmation=1")), (t = this.game.prodigy.create.panel(this.background, 220, 620, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Discord 2", {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "www.chess.com/club/pde1500/join")), this.showLogin(!0), this.checkForAdmin(), Screen.prototype.screenSetup.call(this)
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/swJcUfbMSQ")), this.showLogin(!0), this.checkForAdmin(), Screen.prototype.screenSetup.call(this)
 		}, e.prototype.offlineMode = function() {
 			this.game.prodigy.start("CharSelect")
 		}, e.prototype.onGoogleLoginButtonClick = function () {
@@ -57089,15 +57175,28 @@ CutScene.getValue = function(e, t, i, a, s) {
 	showWizards: function() {
 		this._stage = 0, this.wizardF.visible = !0, this.wizardF.x = 490, this.wizardF.reload(), this.wizardF.highlight(!0, -50, -200), this.wizardM.visible = !0, this.wizardM.x = 790, this.wizardM.reload(), this.wizardM.highlight(!0, -50, -200), this.wizardM.isFacingLeft() || this.wizardM.flip(), this.next.setInactive(), this.next.highlight(!1), this.panels.visible = !1
 	},
-	showChoices: function(e, t) {
+	showChoices: function (e, t) {
 		if (0 === this._stage) {
-			this.panels.visible = !0, this.next.setActive(), this.next.highlight(!0), this.game.prodigy.player.appearance = e.source.appearance, e.highlight(!1), t.visible = !1, this._stage = 1, e.x = 640, e.isFacingLeft() && e.flip();
-			var i = function(e, t, i, a) {
+			this.panels.visible = !0, this.next.setActive(), this.next.highlight(!0), this.game.prodigy.player.appearance = e.source.appearance, this.game.prodigy.network.player = this.game.prodigy.player, this.game.prodigy.player.appearance.setName("Apprentice"), e.highlight(!1), t.visible = !1, this._stage = 1, e.x = 640, e.isFacingLeft() && e.flip();
+			var i = function (e, t, i, a) {
 					t && e.source.appearance.setSkinColor(t), i && e.source.appearance.setEyeColor(i), a && e.source.appearance.setHairColor(a), e.reload(), e.chat(this.game.random.pick([10]), 150)
+				},
+				a = 180,
+				s = this.game.prodigy.create.element(this.panels, 760, 280 + a),
+				r = this.game.prodigy.create.panel(s, 0, 0, 5, 3, "panel-light"),
+				o = r.add(this.game.prodigy.create.sprite(1, 80, "core", "panel-pointer"));
+			o.scale.x = o.scale.y = -1, this.game.prodigy.create.font(s, 0, -18, "Skin Color", {
+				width: 250,
+				align: "center"
+			});
+			for (var n = 0; n < Prodigy.CharCreate.SKIN_COLORS.length; n++) {
+				var h = Prodigy.CharCreate.SKIN_COLORS[n],
+					l = this.game.prodigy.create.button(s, 18 + 80 * (n % 3), 15 + 70 * Math.floor(n / 3), "icons", "empty", i.bind(this, e, h, null, null));
+				l.sprite.tint = Prodigy.CharCreate.SKINS[n]
 			}
-			a = this.game.prodigy.create.element(this.panels, 760, 260);
-			var r = (s = this.game.prodigy.create.panel(a, 0, 0, 5, 3, "panel-light")).add(this.game.prodigy.create.sprite(1, 100, "core", "panel-pointer"));
-			r.scale.x = -1, this.game.prodigy.create.font(a, 0, -18, "Eye Color", {
+			s = this.game.prodigy.create.element(this.panels, 760, 80 + a), r = this.game.prodigy.create.panel(s, 0, 0, 5, 3, "panel-light");
+			var o = r.add(this.game.prodigy.create.sprite(1, 100, "core", "panel-pointer"));
+			o.scale.x = -1, this.game.prodigy.create.font(s, 0, -18, "Eye Color", {
 				width: 250,
 				align: "center"
 			});
@@ -58627,7 +58726,7 @@ Prodigy.Skin = function(e, t) {
 		this._count++, this._count > 180 && (this.randomizePosition.call(this), this._count = 0)
 	}
 }), Prodigy.SkinFactory = function(e) {
-	this.game = e, this.active = [new Prodigy.MagicParticle, new Prodigy.MagicParticle2]
+	this.game = e, this.active = [new Prodigy.Pumpkinfest, new Prodigy.MagicParticle, new Prodigy.MagicParticle2]
 }, Prodigy.SkinFactory.prototype = {
 	constructor: Prodigy.SkinFactory,
   active: [new Prodigy.MagicParticle, new Prodigy.MagicParticle2],
