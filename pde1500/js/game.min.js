@@ -45833,7 +45833,7 @@ Prodigy.ForestBoss = function(e, t) {
 		}, this.game.prodigy.graphics.setResolutionExtraGigantic.bind(this))
 	},
 	openOther: function() {
-		var z = Util.isDefined(this.game.prodigy.player.world) ? "Your world is: " + this.game.prodigy.player.world.name : "You are playing in Offline Mode.";
+		var z = Util.isDefined(this.game.prodigy.player.world) ? "Your world is: " + this.game.prodigy.player.world.name : "Your world is pde1500.";
 		this.game.prodigy.create.font(this.content, 0, -50, z, {
 			width: 600,
 			align: "center"
@@ -47350,7 +47350,7 @@ Prodigy.ForestBoss = function(e, t) {
                 this.game.prodigy.world.teleport("house-suburbs")
         },
 	challenge: function() {
-		this.game.prodigy.network.openWebsite("github.com/Ao28th28/Ao28th28.github.io/issues/new?assignees=&labels=Suggestion&projects=&template=feature_request.yml&title=%2ACoolest+title+ever%2A")
+		this.game.prodigy.network.openWebsite("discord.gg/WcVW5pjYz3")
 	},
 	sendGift: function() {
 		this.game.prodigy.network.openWebsite("youtu.be/dQw4w9WgXcQ?feature=shared")
@@ -56546,6 +56546,7 @@ WalkableScreen = function(e, t, i) {
 		this.showMenu && (this.menuBar = new Prodigy.HUD.Menu(this.game, this.menus, this.menuDisabled), -1 === this.zoneName.indexOf("scene-") && this.game.broadcaster.broadcast(Prodigy.Events.Mailer.GET_TOTAL_MAIL, "ProdigyMailerButton", [])),
 		Screen.prototype.create.call(this),
 		GameConstants.get("GameConstants.Build.DEBUG") && this.game.broadcaster.addAppListener(Prodigy.Events.Debug.AUTO_CLICK, this.onDebugAutoClick.bind(this), this);
+		this.createBots();
 	},
 	createBackground: function() {
 		this.bg = this.game.prodigy.create.sprite(0, 0, this.screenName, "bg"), this.bg.inputEnabled = !0, this.bg.events.onInputDown.add(this.listener.bind(this), this), this.background.add(this.bg)
