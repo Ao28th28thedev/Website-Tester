@@ -5,4 +5,4 @@ Old Prodigy is for historical purposes.
 
 # Update on multiplayer for pde1500
 
-It's coming soon.
+I made connecting to a world possible again.
