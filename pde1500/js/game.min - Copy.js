@@ -21,7 +21,7 @@ function Device() {}
 function ApiClient(e, t) {
 	function i(e, t) {
 		var i = g[e];
-		t.root = "https://prodidows-server.onrender.com/"
+		t.root = i + y
 	}
 
 	function a(e, t, i, a, s, r) {
@@ -66,31 +66,29 @@ function ApiClient(e, t) {
 		d = {},
 		p = {};
 	this.generic_ajax_error = function () {}, this.uniqueKey = void 0, this.userID = void 0, this.socket = void 0, this.clientVersion = e.clientVersion;
-var c = {
-    version: "v1",
-    autoping: !0,
-    url: {
-        leaderboard: void 0,
-        multiplayer: void 0,
-        messages: void 0,
-        // ⭐ MODIFIED: Initialize matchmaking and events URLs to proper strings ⭐
-        matchmaking: "", // Initialize as empty string or full base path
-        events: ""       // Initialize as empty string or full base path
-    },
-    ajax_timeout: 3e4,
-    root: void 0
-},
+	var c = {
+			version: "v1",
+			autoping: !0,
+			url: {
+				leaderboard: void 0,
+				multiplayer: void 0,
+				messages: void 0,
+				matchmaking: void 0
+			},
+			ajax_timeout: 3e4,
+			root: void 0
+		},
 		// ⭐ MODIFIED: Base URLs for HTTP API to point to your Render server ⭐
 		g = {
-			dev: "https://definitive-edition-backend.onrender.com/",
-			staging: "https://definitive-edition-backend.onrender.com/",
-			production: "https://definitive-edition-backend.onrender.com/"
+			dev: "https://prodidows-server.onrender.com/",
+			staging: "https://prodidows-server.onrender.com/",
+			production: "https://prodidows-server.onrender.com/"
 		},
 		// ⭐ MODIFIED: Base URLs for WebSocket (Socket.IO) API to point to your Render server ⭐
 		u = {
-			dev: "wss://definitive-edition-backend.onrender.com/",
-			staging: "wss://definitive-edition-backend.onrender.com/",
-			production: "wss://definitive-edition-backend.onrender.com/"
+			dev: "",
+			staging: "ws://prodidows-server.onrender.com/",
+			production: "ws://prodidows-server.onrender.com/"
 		},
 		y = "game-api/",
 		m = "leaderboard-api/",
@@ -144,47 +142,125 @@ switch (window.location.host) {
 			Util.log("The data you are attempting to access does not exist.")
 		}, t)
 		for (var E = Object.keys(t), T = 0, _ = E.length; _ > T; ++T) void 0 !== t[E[T]] && (p[E[T]] = t[E[T]]);
-	this.joinMultiplayerServer = function (e, t, i, a, s, r, o, h) {
-		var d = n(i, ["200", "503"], "Join multiplayer Server");
-		if (d) {
-			var p = this.userID,
-				g = this.uniqueKey;
-			if (void 0 == p || void 0 == g) return Util.log("missing user id or token"), !1;
-			var u = !1,
-				y = c.url.multiplayer;
-			/^https:\/\//.test(y) && (u = !0);
-			var m = {
-				"force new connection": !0,
-				reconnection: !1,
-				transports: ["websocket", "xhr-polling", "jsonp-polling", "htmlfile"],
-				secure: u,
-				query: "userId=" + p + "&worldId=" + e + "&userToken=" + g + "&zone=" + t
-			};
-			l.socket = io.connect(c.url.multiplayer, m), l.socket.on("connect", function () {
-				Util.log("client connected")
-			}), l.socket.on("connect", d["200"]), l.socket.on("connect_error", function (e) {
-				Util.log("connect_error"), Util.log(e, Util.ERROR)
-			}), l.socket.on("error", function (e) {
-				e && Util.log(e, Util.ERROR), e.code && d[e.code] && d[e.code]()
-			}), l.socket.on("connect_error", d["503"]), l.socket.on("message", function (e) {
-				a(e)
-			}), l.socket.on("playerJoined", function (e) {
-				Util.log("player Joined - playerId: " + e), o(e)
-			}), l.socket.on("playerLeft", function (e) {
-				Util.log("player Left - playerId: " + e), h(e)
-			}), l.socket.on("playerList", function (e) {
-				Util.log("player list received"), s(e)
-			}), l.socket.on("disconnect", function () {
-				Util.log("Disconnected from multiplayer server"), r()
-			})
-		}
-	}, this.emitMessage = function (e, t) {
+this.joinMultiplayerServer = function (worldInfo, clientZone, callbacks, onMessageCb, onPlayerListCb, onDisconnectCb, onPlayerJoinedCb, onPlayerLeftCb) {
+    // ⭐ REBUILT LOGIC: Always retrieve the latest userID and authKey from global game state ⭐
+    // This ensures these values are available even if ApiClient's internal 'this.uniqueKey'/'this.userID'
+    // haven't been updated yet due to asynchronous login or patch timing.
+    const playerProdigy = window.Prodigy && window.Prodigy.game && window.Prodigy.game.prodigy;
+    const playerObject = playerProdigy && playerProdigy.player;
+
+    const authKey = (playerObject && playerObject.token) ? playerObject.token : 'FALLBACK_AUTHKEY_MISSING';
+    const userID = (playerObject && playerObject.userID) ? playerObject.userID : 'FALLBACK_USERID_MISSING';
+    
+    // Get worldId directly from the passed worldInfo object.
+    const worldId = (worldInfo && worldInfo.id) ? worldInfo.id : 'FALLBACK_WORLDID_MISSING';
+
+    Util.log(`Attempting to connect with: worldId=${worldId}, userID=${userID}, authKey=${authKey ? 'PRESENT' : 'MISSING'}.`, Util.INFO);
+
+    if (typeof io === 'undefined') {
+        Util.error("⭐ PATCH ERROR: Socket.IO client library (io) is not loaded. Cannot establish multiplayer connection.");
+        if (callbacks && typeof callbacks[500] === 'function') {
+            callbacks[500]();
+        }
+        return;
+    }
+
+    // Disconnect any existing socket connection to prevent multiple connections
+    if (this.socket && this.socket.connected) {
+        Util.log("Disconnecting existing Socket.IO connection before new attempt.", Util.INFO);
+        this.socket.disconnect();
+    }
+    this.socket = undefined;
+
+    this.socketConnectFailed = false;
+
+    // Determine the socket base URL, ensuring WSS:// for secure connections.
+    // 'c' is the ApiClient's internal config object.
+    const socketBaseUrl = (typeof c !== 'undefined' && c.url && c.url.multiplayer) ?
+                        c.url.multiplayer : 'http://localhost:10000'; // Fallback to your Render URL
+
+    const socketUrl = socketBaseUrl.replace(/^http:\/\//i, 'https://').replace(/^ws:\/\//i, 'wss://');
+
+    // Initialize Socket.IO connection
+    this.socket = io(socketUrl, {
+        query: {
+            authKey: authKey, // Use the robustly retrieved authKey
+            userID: userID,   // Use the robustly retrieved userID
+            worldId: worldId, // Use the robustly retrieved worldId
+            zone: clientZone  // Passed as 't' (clientZone) argument
+        },
+        transports: ['websocket', 'polling']
+    });
+
+    // Attach Socket.IO event listeners
+    this.socket.on('connect', () => {
+        Util.log("⭐ Socket.IO connected! Socket ID:", this.socket.id, `to world ${worldId} for user ${userID}`);
+        // Emit a 'joinGameWorld' event to the server with crucial data.
+        this.socket.emit('joinGameWorld', {
+            worldId: worldId,
+            zone: clientZone,
+            uniqueKey: authKey, // Send authKey in payload too
+            userID: userID       // Send userID in payload too
+        });
+        // Call the success callback (callbacks[200]) if available.
+        if (callbacks && typeof callbacks[200] === 'function') {
+            callbacks[200]();
+        }
+    });
+
+    this.socket.on('connect_error', (error) => {
+        this.socketConnectFailed = true;
+        Util.error("⭐ Socket.IO connection error:", error.message || error);
+        // Call the appropriate error callback.
+        if (callbacks && typeof callbacks[500] === 'function') {
+            callbacks[500](error);
+        } else if (onDisconnectCb && typeof onDisconnectCb === 'function') {
+            onDisconnectCb(error);
+        }
+    });
+
+    this.socket.on('disconnect', (reason) => {
+        Util.log("⭐ Socket.IO disconnected:", reason);
+        if (onDisconnectCb && typeof onDisconnectCb === 'function') {
+            onDisconnectCb(reason);
+        }
+    });
+
+    this.socket.on('message', (data) => {
+        Util.log("⭐ CLIENT RECEIVED GENERIC MESSAGE:", data, Util.INFO); // Debug log
+        if (onMessageCb && typeof onMessageCb === 'function') {
+            onMessageCb(data);
+        }
+    });
+
+    this.socket.on('playerList', (data) => {
+        Util.log("⭐ CLIENT RECEIVED PLAYERLIST! Players:", data.players, Util.INFO); // Debug log
+        if (onPlayerListCb && typeof onPlayerListCb === 'function') {
+            onPlayerListCb(data);
+        }
+    });
+
+    this.socket.on('playerJoined', (player) => {
+        Util.log("⭐ CLIENT RECEIVED PLAYERJOINED! New Player:", player, Util.INFO); // Debug log
+        if (onPlayerJoinedCb && typeof onPlayerJoinedCb === 'function') {
+            onPlayerJoinedCb(player);
+        }
+    });
+
+    this.socket.on('playerLeft', (player) => {
+        Util.log("⭐ CLIENT RECEIVED PLAYERLEFT! Player:", player, Util.INFO); // Debug log
+        if (onPlayerLeftCb && typeof onPlayerLeftCb === 'function') {
+            onPlayerLeftCb(player);
+        }
+    });
+};
+	this.emitMessage = function (e, t) {
 		var i = n(t, ["200"], "emit message");
 		return i && l.socket ? (l.socket.emit("message", e), !0) : !1
 	}, this.getWorldList = function (e) {
 		var t = n(e, ["200", "400", "500", "503"], "get world list");
 		if (t) {
-			var i = "worlds-api/world-list.json",
+			var i = "v2/worlds",
 				s = c.root + i;
 			return a("get", s, {}, t, "getWorldList", {
 				ignoreHeaders: !0
@@ -306,23 +382,43 @@ switch (window.location.host) {
 			}), !0
 		}
 		return !1
-	}, this.getLeaderboard = function (e, t, i, s) {
-		var r = n(s, ["200"], "get leaderboard");
-		if (r) {
-			var o = c.url.leaderboard;
-			return a("get", l.url.leaderboard + o + "class/" + e, {
-				sort: t,
-				limit: i
-			}, r, "leaderboard", {
-				ignoreHeaders: !0
-			}), !0
-		}
-		return !1
-	}, this.getPvpLeaderboard = function (e, t, i, s, r) {
+}, this.getLeaderboard = function (e, t, i, s) {
+	var r = n(s, ["200"], "get leaderboard");
+	if (r) {
+		// Replacing the external configuration lookup (c.url.leaderboard) with 
+		// a hardcoded segment that directs the API call to your custom endpoint structure.
+		// 'l.url.leaderboard' should still provide the base domain/port.
+		var o = "/api/leaderboard/";
+		return a("get", l.url.leaderboard + o + "class/" + e, {
+			sort: t,
+			limit: i
+		}, r, "leaderboard", {
+			ignoreHeaders: !0
+		}), !0
+	}
+	return !1
+	}, 	this.getPvpLeaderboard = function (e, t, i, s, r) {
 		var o = n(r, ["200"], "get pvp leaderboard");
 		if (o) {
-			var h = c.url.leaderboard;
-			return a("get", l.url.leaderboard + h + "pvp/" + e.min + "/" + e.max, {
+			// Construct the correct relative API path: leaderboard/pvp/min/max
+			var h = "leaderboard/pvp/" + e.min + "/" + e.max;
+
+            // Store the original success callback function
+            var originalSuccess = o["200"];
+
+            // Overwrite the success callback to unwrap the nested response data
+            o["200"] = function(response) {
+                // Server returns: { leaderboard: { leaderboard: [list], playerRank: {rank} } }
+                
+                // Safely extract the nested list and player rank
+                var list = response && response.leaderboard ? response.leaderboard.leaderboard : [];
+                var rank = response && response.leaderboard ? response.leaderboard.playerRank : null;
+
+                // Call the client's original success function with the two expected arguments
+                originalSuccess(list, rank);
+            };
+
+			return a("get", h, { // Use the corrected relative path h
 				page: i || 0,
 				limit: s || 30,
 				player_score: t.arenaScore,
@@ -381,19 +477,15 @@ switch (window.location.host) {
 			}), !0
 		}
 		return !1
-	}, this.startMatchmaking = function (e, t, i, s) {
-		var r = n(s, ["200"], "startMatchmaking");
-		if (r) {
-			var o = c.url.matchmaking + "begin";
-			return a("post", o, {
-				userID: l.userID,
-				level: e,
-				score: t,
-				playerData: i,
-				token: l.uniqueKey
-			}, r, "startMatchmaking"), !0
-		}
-		return !1
+	}, this.startMatchmaking = function(e, t, i, s) {
+		var n = r(s, ["200"], "startMatchmaking");
+		return !!n && (a("post", "v1/matchmaking-api/begin", {
+			userID: o.userID,
+			level: e,
+			score: t,
+			playerData: i,
+			token: o.uniqueKey
+		}, n, "startMatchmaking"), !0)
 	}, this.quitMatchmaking = function(e) {
 		var t = r(e, ["200"], "quitMatchmaking");
 		return !!t && (a("post", l.url.matchmaking + "end", {
@@ -2160,7 +2252,7 @@ Util.capitalize = function(e) {
 		},
 		"zone-lamplight": {
 			type: "localAtlas",
-			base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/images/",
+			base: "https://ao28th28.github.io/oldprodigy/pde1500/assets/images/",
 			key: "zone-lamplight",
 			v: "5"
 		},
@@ -30232,7 +30324,7 @@ Util.capitalize = function(e) {
 		return Prodigy.Hints.data[e][Math.floor(Math.random() * Prodigy.Hints.data[e].length)]
 	}
 }, Prodigy.Hints.prototype.constructor = Prodigy.Hints, Prodigy.EmailDomains = function() {}, Prodigy.EmailDomains.data = {
-	domains: ["aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com", "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com", "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk", "email.com", "games.com", "gmx.net", "hush.com", "hushmail.com", "icloud.com", "inbox.com", "lavabit.com", "love.com", "outlook.com", "pobox.com", "rocketmail.com", "safe-mail.net", "wow.com", "ygm.com", "ymail.com", "zoho.com", "fastmail.fm", "yandex.com", "bellsouth.net", "charter.net", "comcast.net", "cox.net", "earthlink.net", "juno.com", "btinternet.com", "virginmedia.com", "blueyonder.co.uk", "freeserve.co.uk", "live.co.uk", "ntlworld.com", "o2.co.uk", "orange.net", "sky.com", "talktalk.co.uk", "tiscali.co.uk", "virgin.net", "wanadoo.co.uk", "bt.com", "sina.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "hotmail.fr", "live.fr", "laposte.net", "yahoo.fr", "wanadoo.fr", "orange.fr", "gmx.fr", "sfr.fr", "neuf.fr", "free.fr", "gmx.de", "hotmail.de", "live.de", "online.de", "t-online.de", "web.de", "yahoo.de", "mail.ru", "rambler.ru", "yandex.ru", "ya.ru", "list.ru", "hotmail.be", "live.be", "skynet.be", "voo.be", "tvcablenet.be", "telenet.be", "hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar", "hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com", "bell.ca", "bell.com", "rogers.ca", "rogers.com", "cogeco.ca", "cogeco.com", "hotmail.ca", "live.ca", "yahoo.ca", "Ao28th28.github.io", "oldprodigy.onrender.com", "prodigygame.com"]
+	domains: ["aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com", "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com", "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk", "email.com", "games.com", "gmx.net", "hush.com", "hushmail.com", "icloud.com", "inbox.com", "lavabit.com", "love.com", "outlook.com", "pobox.com", "rocketmail.com", "safe-mail.net", "wow.com", "ygm.com", "ymail.com", "zoho.com", "fastmail.fm", "yandex.com", "bellsouth.net", "charter.net", "comcast.net", "cox.net", "earthlink.net", "juno.com", "btinternet.com", "virginmedia.com", "blueyonder.co.uk", "freeserve.co.uk", "live.co.uk", "ntlworld.com", "o2.co.uk", "orange.net", "sky.com", "talktalk.co.uk", "tiscali.co.uk", "virgin.net", "wanadoo.co.uk", "bt.com", "sina.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "hotmail.fr", "live.fr", "laposte.net", "yahoo.fr", "wanadoo.fr", "orange.fr", "gmx.fr", "sfr.fr", "neuf.fr", "free.fr", "gmx.de", "hotmail.de", "live.de", "online.de", "t-online.de", "web.de", "yahoo.de", "mail.ru", "rambler.ru", "yandex.ru", "ya.ru", "list.ru", "hotmail.be", "live.be", "skynet.be", "voo.be", "tvcablenet.be", "telenet.be", "hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar", "hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com", "bell.ca", "bell.com", "rogers.ca", "rogers.com", "cogeco.ca", "cogeco.com", "hotmail.ca", "live.ca", "yahoo.ca", "ao28th28.github.io", "ao28th28thedev.github.io", "oldprodigy.onrender.com", "prodigygame.com"]
 }, Prodigy.EmailDomains.prototype = {
 	hasCommonDomain: function(e) {
 		var t = e.substring(e.indexOf("@") + 1, e.length);
@@ -45920,7 +46012,7 @@ Prodigy.ForestBoss = function(e, t) {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, steadydelusionreview, Craftersshaft", {
+		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, Stefan25897, steadydelusionreview, Craftersshaft", {
 			width: 610,
 			align: "center",
 		})
@@ -46497,7 +46589,7 @@ Prodigy.ForestBoss = function(e, t) {
 }, Prodigy.extends(Prodigy.Menu.Server, Prodigy.Control.Menu, {
 	constructor: Prodigy.Menu.Server,
 	menuSetup: function () {
-		Prodigy.Control.Menu.prototype.menuSetup.call(this), this.showFrame("map", "The real multiplayer mode is not coming soon.", []), this.game.prodigy.create.font(this, 125, 60, "Nobody will help us...", {
+		Prodigy.Control.Menu.prototype.menuSetup.call(this), this.showFrame("map", "The real multiplayer mode is in beta.", []), this.game.prodigy.create.font(this, 125, 60, "Click on any world or any of the 2 buttons to close this menu.", {
 			size: 20
 		}), this.game.prodigy.create.textButton(this, 930, 20, {
 			size: Prodigy.Control.TextButton.MED,
@@ -46574,16 +46666,54 @@ Prodigy.ForestBoss = function(e, t) {
 	getServerIcon: function (e) {
 		return Util.convertItemToIcon(e)
 	},
-	connect: function(e, t) {
-		this.content.removeAll(!0);
-		var i = "Connecting to ";
-		i += Util.isDefined(e.name) ? e.name : "server", this.game.prodigy.create.font(this.content, 0, 320, i + "...", {
-			size: 30,
-			width: 1280,
-			align: "center"
-		}), this.game.prodigy.network.joinMultiplayerServer(e, "zone-login", this.connected.bind(this, !0), this.connected.bind(this, !1, t), this.connected.bind(this, !1, t, "This world is full. Please select another world"))
-	},
-	connected: function(e, t, i) {
+connect: function(e, t) { // 'e' is the world object passed from UI, 't' is likely an error context
+    // ⭐ PATCH START: Ensure player authentication and world data are populated ⭐
+    if (!this.game.prodigy.uniqueKey || !this.game.prodigy.userID) {
+        // Fallback for debugging, if login hasn't fully set them.
+        this.game.prodigy.uniqueKey = this.game.prodigy.player.token || 'DEBUG_TOKEN_' + Math.random().toString(36).substring(7);
+        this.game.prodigy.userID = this.game.prodigy.player.userID || 'DEBUG_USER_' + Math.random().toString(36).substring(7);
+        Util.log("DEBUG: Prodigy.game.prodigy.uniqueKey/userID were undefined, using fallbacks.", Util.WARN);
+    }
+    Util.log(`Client preparing to connect with: UserID=${this.game.prodigy.userID}, AuthKey=${this.game.prodigy.uniqueKey ? 'PRESENT' : 'MISSING'}.`, Util.INFO);
+
+    // ⭐ CRITICAL FIX: Ensure 'e' (the world object) has an 'id' property. ⭐
+    // This log confirms if the 'id' is actually present in the object received by this function.
+    if (!Util.isDefined(e) || !Util.isDefined(e.id)) {
+        this.showError("Invalid world selected. Missing world ID.", t);
+        Util.error("ERROR: World object missing ID during connect attempt:", e); // Log the problematic 'e' object
+        return;
+    }
+    Util.log(`World object (e) has ID: ${e.id}`, Util.INFO); // Confirm world ID is seen here.
+    // ⭐ PATCH END ⭐
+
+    if (!this.isAutoSelect && e.full >= 100) {
+        this.showError("The world you selected is full. Please try another.", t);
+        Util.log(`World ${e.name} is full (${e.full}%).`, Util.WARN);
+    } else {
+        this.content.removeAll(true);
+
+        var i = "Connecting to ";
+        i += Util.isDefined(e.name) ? e.name : "server";
+        Util.log(`Displaying connecting message: "${i}..."`, Util.INFO);
+
+        this.game.prodigy.create.font(this.content, 0, 320, i + "...", {
+            size: 30,
+            width: 1280,
+            align: "center"
+        });
+
+        // ⭐ CRITICAL FIX: Pass the ENTIRE world object 'e' as the first argument ⭐
+        // ApiClient.joinMultiplayerServer expects this object to extract the world ID (e.id).
+        this.game.prodigy.network.joinMultiplayerServer(
+            e, // Pass the full world object 'e' here
+            "zone-login",
+            this.connected.bind(this, !0),
+            this.connected.bind(this, !1, t),
+            this.connected.bind(this, !1, t, "This world is full. Please select another world")
+        );
+    }
+},
+	connected: function (e, t, i) {
 		Util.isDefined(this) && Util.isDefined(this.game) && (this.content.removeAll(!0), e ? this.close(!0) : this.showError(i || "Could not connect to world. Try again, or select another world.", t))
 	},
 	showError: function (e, t) {
@@ -50585,7 +50715,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	subject: "The real Multiplayer Mode is coming soon!",
 	isOpened: !1,
 	image: "after-hours",
-	message: "Wait, multiplayer mode is not coming soon so fuck it."
+	message: "Only a few parts of the real Multiplayer Mode are working right now. More parts are coming soon."
 }, {
 	id: 3,
 	subject: "You can now catch pets in The Lost Island!",
