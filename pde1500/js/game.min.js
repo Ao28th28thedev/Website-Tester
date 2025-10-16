@@ -49558,7 +49558,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
 }, {
     opponent: {
         data: '{"level":100}',
-        appearance: '{"name":"Surveyor Melody", "gender":"female", "hairStyle":4,"hairColor":9,"skinColor":1,"eyeColor":4}',
+        appearance: '{"name":"Ice Carver Melody", "gender":"female", "hairStyle":4,"hairColor":3,"skinColor":1,"eyeColor":10}',
         equipment: '{"hat":23, "outfit":52, "weapon":77, "boots":18}'
     },
     title: "Ao28th28's another alt account from Daboss7173's PDE",
