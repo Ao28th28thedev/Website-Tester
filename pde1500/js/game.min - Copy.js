@@ -47480,7 +47480,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
                 this.game.prodigy.world.teleport("house-suburbs")
         },
 	challenge: function() {
-		https://github.com/Ao28th28thedev/Ao28th28thedev/issues
+		this.game.prodigy.network.openWebsite("https://github.com/Ao28th28thedev/Ao28th28thedev/issues")
 	},
 	sendGift: function() {
 		this.game.prodigy.network.openWebsite("youtu.be/dQw4w9WgXcQ?feature=shared")
@@ -49296,7 +49296,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
 	opponent: {
 		data: '{"level":100}',
 		appearance: '{"name":"Botanist Alexa", "gender":"female", "hairStyle":5,"hairColor":16,"skinColor":1,"eyeColor":13}',
-		equipment: '{"hat":23, "outfit":24, "weapon":47, "boots":18}'
+		equipment: '{"hat":23, "outfit":52, "weapon":47, "boots":18}'
 	},
 	title: "Prodidows' wizard in Daboss7173's PDE",
 	description: "If you have admin access to Prodidows, you'll also have access to this wizard in Daboss7173's PDE by signing in to Google as Prodidows!",
@@ -49312,7 +49312,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
 	opponent: {
 		data: '{"level":100}',
 		appearance: '{"name":"Botanist David", "gender":"male", "hairStyle":3,"hairColor":16,"skinColor":1,"eyeColor":13}',
-		equipment: '{"hat":23, "outfit":52, "weapon":47, "boots":18}'
+		equipment: '{"hat":23, "outfit":24, "weapon":47, "boots":18}'
 	},
 	title: "Ao28th28 from Daboss7173's PDE",
 	description: "This is Ao28th28's main character!",
@@ -81992,16 +81992,12 @@ Prodigy.Controller.BattleController = function(e) {
 				(!Util.isDefined(n.level) || e.scale) && (n.level = t), i.push(new Monster(n, this.game))
 			}
 		if (Util.isDefined(e.opponent))
-			for (var o = 0; o < e.opponent.length; o++) e.scale && (Util.isDefined(e.opponent[o].data) || (e.opponent[o].data = {}), e.opponent[o].data.level = this.game.prodigy.player.getLevel()), i.push(this.initPlayerOpponent(e.opponent[o])), i.push(this.initBotOpponent(e.opponent[o]));
+			for (var o = 0; o < e.opponent.length; o++) e.scale && (Util.isDefined(e.opponent[o].data) || (e.opponent[o].data = {}), e.opponent[o].data.level = this.game.prodigy.player.getLevel()), i.push(this.initPlayerOpponent(e.opponent[o]));
 		return i
 	},
 	initPlayerOpponent: function(e) {
 		var t = new Player(this.game);
 		return t.init(e), t
-	},
-	initBotOpponent: function(e) {
-		var z = processBot;
-		return z.init(e), z
 	},
 	chooseOpponent: function(e) {
 		for (var t = 0, i = 0; i < e.length; i++) t += Util.isDefined(e[i].R) ? e[i].R : Monsters.getEncounterRate(e[i].ID);
