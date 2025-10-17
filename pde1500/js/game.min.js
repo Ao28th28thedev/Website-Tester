@@ -86,7 +86,7 @@ function ApiClient(e, t) {
 		},
 		// ⭐ MODIFIED: Base URLs for WebSocket (Socket.IO) API to point to your Render server ⭐
 		u = {
-			dev: "",
+			dev: "ws://prodidows-server.onrender.com/",
 			staging: "ws://prodidows-server.onrender.com/",
 			production: "ws://prodidows-server.onrender.com/"
 		},
@@ -47480,7 +47480,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
                 this.game.prodigy.world.teleport("house-suburbs")
         },
 	challenge: function() {
-		this.game.prodigy.network.openWebsite("discord.gg/WcVW5pjYz3")
+		https://github.com/Ao28th28thedev/Ao28th28thedev/issues
 	},
 	sendGift: function() {
 		this.game.prodigy.network.openWebsite("youtu.be/dQw4w9WgXcQ?feature=shared")
@@ -56431,7 +56431,7 @@ var Screen = function() {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/EFqYQkkAYm")), (t = this.game.prodigy.create.panel(this.background, 350, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Go Back", {
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/URy2FwxF")), (t = this.game.prodigy.create.panel(this.background, 350, 670, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Go Back", {
 				size: 16,
 				width: 120,
 				align: "center"
@@ -56443,11 +56443,7 @@ var Screen = function() {
 				size: 16,
 				width: 120,
 				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "www.youtube.com/@pde1500?sub_confirmation=1")), (t = this.game.prodigy.create.panel(this.background, 220, 620, 3, 1, "lb")).alpha = .25, this.game.prodigy.create.font(this.background, t.x, t.y + 8, "Discord 2", {
-				size: 16,
-				width: 120,
-				align: "center"
-			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "discord.gg/swJcUfbMSQ")), this.showLogin(!0), this.checkForAdmin(), Screen.prototype.screenSetup.call(this)
+			}), t.setClickable(this.game.prodigy.network.openWebsite.bind(this.game.prodigy.network, "www.youtube.com/@pde1500?sub_confirmation=1")), this.showLogin(!0), this.checkForAdmin(), Screen.prototype.screenSetup.call(this)
 		}, e.prototype.offlineMode = function() {
 			this.game.prodigy.start("CharSelect")
 		}, e.prototype.onGoogleLoginButtonClick = function () {
@@ -81996,12 +81992,16 @@ Prodigy.Controller.BattleController = function(e) {
 				(!Util.isDefined(n.level) || e.scale) && (n.level = t), i.push(new Monster(n, this.game))
 			}
 		if (Util.isDefined(e.opponent))
-			for (var o = 0; o < e.opponent.length; o++) e.scale && (Util.isDefined(e.opponent[o].data) || (e.opponent[o].data = {}), e.opponent[o].data.level = this.game.prodigy.player.getLevel()), i.push(this.initPlayerOpponent(e.opponent[o]));
+			for (var o = 0; o < e.opponent.length; o++) e.scale && (Util.isDefined(e.opponent[o].data) || (e.opponent[o].data = {}), e.opponent[o].data.level = this.game.prodigy.player.getLevel()), i.push(this.initPlayerOpponent(e.opponent[o])), i.push(this.initBotOpponent(e.opponent[o]));
 		return i
 	},
 	initPlayerOpponent: function(e) {
 		var t = new Player(this.game);
 		return t.init(e), t
+	},
+	initBotOpponent: function(e) {
+		var z = processBot;
+		return z.init(e), z
 	},
 	chooseOpponent: function(e) {
 		for (var t = 0, i = 0; i < e.length; i++) t += Util.isDefined(e[i].R) ? e[i].R : Monsters.getEncounterRate(e[i].ID);
