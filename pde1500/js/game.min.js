@@ -54808,7 +54808,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 			type: "try-match",
 			classID: this.game.prodigy.player.getLatestClassID(),
 			grade: this.game.prodigy.player.grade
-		}, !0), this.findChallenger(), this.message = this.game.prodigy.open.message("Searching for a good match based on your current arena ranking... please wait. \n\n(It could take up to a minute or more.) \n\nTime waiting: XTIMERX", this.closeMessage.bind(this, !0), null, "Finding Challenger")) : this.message = this.game.prodigy.open.message("Cannot take part in the arena using just Fake Multiplayer Mode.")
+		}, !0), this.findChallenger(), this.message = this.game.prodigy.open.message("You can use this as a timer. \n\nTime: XTIMERX", this.closeMessage.bind(this, !0), null, "Finding Challenger")) : this.message = this.game.prodigy.open.message("You can use this as a timer. \n\nTime: XTIMERX")
 	},
 	findChallenger: function () {
 		if (Util.log("findChallenger retry"), Util.isDefined(this.game)) {
