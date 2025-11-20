@@ -1827,7 +1827,7 @@ Util.capitalize = function(e) {
 		},
 		"npc-face-mama_star": {
 			type: "atlas",
-                        base: z,
+      base: "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1500/assets/images/",
 			key: "npc-face-mama-star",
 			v: "1"
 		},
@@ -2013,13 +2013,13 @@ Util.capitalize = function(e) {
 		},
 		"npc-sprite-julia_ghoulia": {
 			type: "atlas",
-                        base: z,
+      base: "https://ao28th28thedev.github.io/oldprodigy/pde1500/assets/v1/atlases/npc-sprite-julia-ghoulia/1",
 			key: "npc-sprite-julia-ghoulia",
 			v: "1"
 		},
 		"npc-sprite-mama_star": {
 			type: "atlas",
-                        base: z,
+base: "https://ao28th28thedev.github.io/oldprodigy/pde1500/assets/v1/atlases/npc-sprite-mama-star/1",
 			key: "npc-sprite-mama-star",
 			v: "1"
 		},
@@ -4420,9 +4420,8 @@ Util.capitalize = function(e) {
                         v: 2
 		},
 		"bgm-firefly-forest": {
-			type: "localAtlas",
-			base: "https://cdn.prodigygame.com/game/assets/v1/audio/bgm-firefly-forest/1/",
-			url: "bgm-firefly-forest.mp3"
+			type: "bgm",
+			v: 2
 		},
 		"bgm-shiverchill-mountain": {
 			type: "localAtlas",
@@ -4481,6 +4480,10 @@ Util.capitalize = function(e) {
 			v: 2
 		},
 		"bgm-winterfest": {
+			type: "bgm",
+			v: 2
+		},
+		"bgm-pumpkinfest": {
 			type: "bgm",
 			v: 2
 		},
@@ -29970,7 +29973,7 @@ Util.capitalize = function(e) {
 			d: 5
 		}
 	}, {
-		text: "Hi there! You can buy Starlight Festival items from my shop right now, but the only way to buy them is by spending Star Shards.",
+		text: "Hi there! Until december, you can purchase exclusive stuff!",
 		face: 0,
 		anim: 4,
 		audio: {
@@ -29988,7 +29991,7 @@ Util.capitalize = function(e) {
 			d: 9
 		}
 	}, {
-		text: "Why hello there! I'm Mama Star! Welcome to the Starlight Festival!",
+		text: "Why hello there! I'm Stitch Head! Welcome to the November Festival!",
 		face: 0,
 		anim: 4,
 		audio: {
@@ -29997,7 +30000,7 @@ Util.capitalize = function(e) {
 			d: 6
 		}
 	}, {
-		text: "Until November 30th, you can purchase Starlight Festival items from my shop with Star Shards.",
+		text: "Until December, you can purchase Starlight Festival items from my shop with Star Shards.",
 		face: 0,
 		anim: 2,
 		audio: {
@@ -46004,7 +46007,7 @@ Prodigy.ForestBoss = function(e, t) {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 75, "Ao28th28 & Toonigy", {
+		this.game.prodigy.create.font(this.content, 0, 75, "Fun with SC & Toonigy", {
 			width: 600,
 			align: "center",
 		})
@@ -46012,7 +46015,7 @@ Prodigy.ForestBoss = function(e, t) {
 			width: 600,
 			align: "center",
 		})
-		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, Stefan25897, steadydelusionreview, Craftersshaft", {
+		this.game.prodigy.create.font(this.content, 0, 155, "Daboss7173, NomadX2, FireProdigy, Stefan25897, steadydelusionreview, Volcannon 96, Craftersshaft", {
 			width: 610,
 			align: "center",
 		})
@@ -47455,7 +47458,7 @@ connect: function(e, t) { // 'e' is the world object passed from UI, 't' is like
 				font: "general",
 				align: "center",
 				width: 200
-			}), h = this.player.getStars() + "/" + (this.player.getStars() + this.player.getStarsToLevel()), this.player.getLevel() >= 100 && (h = "MAX"), l = this.game.prodigy.create.panel(this.content, 500, 65, 4, 2, ""), this.game.prodigy.create.font(l, 5, 5, "[mail-star] Stars", {
+			}), h = this.player.getStars() + "/" + (this.player.getStars() + this.player.getStarsToLevel()), this.player.getLevel() >= 200 && (h = "MAX"), l = this.game.prodigy.create.panel(this.content, 500, 65, 4, 2, ""), this.game.prodigy.create.font(l, 5, 5, "[mail-star] Stars", {
 				size: 20
 			}), this.game.prodigy.create.font(l, -20, 46, h, {
 				font: "general",
@@ -50712,10 +50715,10 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 
 }, {
 	id: 2,
-	subject: "The real Multiplayer Mode is coming soon!",
+	subject: "The real Multiplayer Mode is never coming soon!",
 	isOpened: !1,
 	image: "after-hours",
-	message: "Only a few parts of the real Multiplayer Mode are working right now. More parts are coming soon."
+	message: "Nobody will help right now."
 }, {
 	id: 3,
 	subject: "You can now catch pets in The Lost Island!",
@@ -51383,6 +51386,11 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	addLockHouse: function(e, t) {
 		this.pages[e][t].push({
 			type: "LockHouseButton"
+		})
+	},
+	addStore: function () {
+		this.pages[e][t].push({
+			type: "StoreButton"
 		})
 	},
 	addSpellbook: function(e, t) {
@@ -53940,14 +53948,14 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 	}
 }), Prodigy.Container.MamaStar = function(e, t, i, a) {
 	Prodigy.Container.CreatureContainer.call(this, e, t, {
-		name: "Mama Star",
+		name: "Not Mama Star",
 		npc: !0
 	}, null, i, a), this._tweens = [], this._setup()
 }, Prodigy.extends(Prodigy.Container.MamaStar, Prodigy.Container.CreatureContainer, {
 	constructor: Prodigy.Container.MamaStar,
 	_setup: function() {
 		var e = "npc-sprite-mama_star";
-		this.sprite = this.game.prodigy.create.element(this.sprites, 0, 0), this._feet = this.sprite.add(this.game.prodigy.create.sprite(-12, -7, e, "feet_0")), this._arms = this.sprite.add(this.game.prodigy.create.sprite(-26, -30, e, "arms_0")), this._legs = this.sprite.add(this.game.prodigy.create.sprite(-12.5, -26, e, "dress_0")), this._body = this.sprite.add(this.game.prodigy.create.sprite(-20, -42, e, "shawl_0")), this._head = this.sprite.add(this.game.prodigy.create.sprite(-33.5, -90, e, "head_0")), this._eyes = this.sprite.add(this.game.prodigy.create.sprite(-7.5, -56, e, "eyes_0")), this._eyebrows = this.sprite.add(this.game.prodigy.create.sprite(-11, -65, e, "eyebrows_0")), this._mouth = this.sprite.add(this.game.prodigy.create.sprite(-4.5, -47, e, "mouth_0")), this._walkTween = [], this._walkTween.push(new Prodigy.TweenController(this.game, this._head)), this._walkTween[0].set("y", [this._head.y, this._head.y - 1, this._head.y - 1, this._head.y - 3, this._head.y - 2, this._head.y - 1], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._mouth)), this._walkTween[1].set("y", [this._mouth.y, this._mouth.y - 1, this._mouth.y - 1, this._mouth.y - 2, this._mouth.y - 1, this._mouth.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyes)), this._walkTween[2].set("frameName", ["eyes_0", "eyes_0", "eyes_0", "eyes_1", "eyes_2", "eyes_0"], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyes)), this._walkTween[3].set("y", [this._eyes.y, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyebrows)), this._walkTween[4].set("y", [this._eyebrows.y, this._eyebrows.y - 1, this._eyebrows.y + 3, this._eyebrows.y + 2, this._eyebrows.y - 2, this._eyebrows.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._body)), this._walkTween[5].set("y", [this._body.y, this._body.y - 1, this._body.y - 1, this._body.y - 2, this._body.y - 1, this._body.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._arms)), this._walkTween[6].set("y", [this._arms.y, this._arms.y - 1, this._arms.y - 1, this._arms.y - 2, this._arms.y - 1, this._arms.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._legs)), this._walkTween[7].set("y", [this._legs.y, this._legs.y - 1, this._legs.y - 1, this._legs.y - 2, this._legs.y - 1, this._legs.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._feet)), this._walkTween[8].set("frameName", ["feet_0", "feet_0", "feet_0", "feet_1", "feet_0", "feet_0"], 133, 9999), this.stand(), this.showName(!0, "Mama Star"), this.name.y += 30
+		this.sprite = this.game.prodigy.create.element(this.sprites, 0, 0), this._feet = this.sprite.add(this.game.prodigy.create.sprite(-12, -7, e, "feet_0")), this._arms = this.sprite.add(this.game.prodigy.create.sprite(-26, -30, e, "arms_0")), this._legs = this.sprite.add(this.game.prodigy.create.sprite(-12.5, -26, e, "dress_0")), this._body = this.sprite.add(this.game.prodigy.create.sprite(-20, -42, e, "shawl_0")), this._head = this.sprite.add(this.game.prodigy.create.sprite(-33.5, -90, e, "head_0")), this._eyes = this.sprite.add(this.game.prodigy.create.sprite(-7.5, -56, e, "eyes_0")), this._eyebrows = this.sprite.add(this.game.prodigy.create.sprite(-11, -65, e, "eyebrows_0")), this._mouth = this.sprite.add(this.game.prodigy.create.sprite(-4.5, -47, e, "mouth_0")), this._walkTween = [], this._walkTween.push(new Prodigy.TweenController(this.game, this._head)), this._walkTween[0].set("y", [this._head.y, this._head.y - 1, this._head.y - 1, this._head.y - 3, this._head.y - 2, this._head.y - 1], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._mouth)), this._walkTween[1].set("y", [this._mouth.y, this._mouth.y - 1, this._mouth.y - 1, this._mouth.y - 2, this._mouth.y - 1, this._mouth.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyes)), this._walkTween[2].set("frameName", ["eyes_0", "eyes_0", "eyes_0", "eyes_1", "eyes_2", "eyes_0"], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyes)), this._walkTween[3].set("y", [this._eyes.y, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1, this._eyes.y - 1], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._eyebrows)), this._walkTween[4].set("y", [this._eyebrows.y, this._eyebrows.y - 1, this._eyebrows.y + 3, this._eyebrows.y + 2, this._eyebrows.y - 2, this._eyebrows.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._body)), this._walkTween[5].set("y", [this._body.y, this._body.y - 1, this._body.y - 1, this._body.y - 2, this._body.y - 1, this._body.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._arms)), this._walkTween[6].set("y", [this._arms.y, this._arms.y - 1, this._arms.y - 1, this._arms.y - 2, this._arms.y - 1, this._arms.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._legs)), this._walkTween[7].set("y", [this._legs.y, this._legs.y - 1, this._legs.y - 1, this._legs.y - 2, this._legs.y - 1, this._legs.y], 133, 9999), this._walkTween.push(new Prodigy.TweenController(this.game, this._feet)), this._walkTween[8].set("frameName", ["feet_0", "feet_0", "feet_0", "feet_1", "feet_0", "feet_0"], 133, 9999), this.stand(), this.showName(!0, "Not Mama Star"), this.name.y += 30
 	},
 	update: function() {
 		Prodigy.Container.CreatureContainer.prototype.update.call(this);
@@ -54944,7 +54952,7 @@ Prodigy.Menu.NameChange = function(e, t, i, a) {
 		size: 20,
 		width: 520,
 		align: "center"
-	}), this.list.error.visible = !1, this.list.chars = this.game.prodigy.create.element(this.list), this.list.icons = [];
+	}), this.list.error.visible = !0, this.list.chars = this.game.prodigy.create.element(this.list), this.list.icons = [];
 	for (var o = 0; 8 > o; o++) this.list.icons.push(this.createIcon(this.list.chars, 20, 60 + 45 * o));
 	this.list.bar = this.game.prodigy.create.slider(this.list, 490, 60, 360, !0, !0), this.game.prodigy.network.getPVPLeaderboard({
 		min: 0,
@@ -58005,117 +58013,223 @@ Prodigy.Skin = function(e, t) {
 		})
 	}
 }), Prodigy.Starlight_Festival = function() {
-	this.eventName = "Starlight Festival", this.shopkeeperName = "Mama Star", this.shopkeeperTag = "mama_star", Prodigy.Skin.call(this, ["tileset-town-november", "event-starlight_festival", "npc-sprite-" + this.shopkeeperTag], ["lamplight-A2", "lamplight-A3", "lamplight-A4", "lamplight-B0", "lamplight-B1", "lamplight-B2", "lamplight-B3", "lamplight-B4", "lamplight-B5", "lamplight-C2", "lamplight-C3", "lamplight-C4"]), this._store = {
-		name: "STARLIGHT FESTIVAL SHOP",
+	this.eventName = "November Festival", this.shopkeeperName = "Stitch Head", this.shopkeeperTag = "npc-sprite-julia_ghoulia", Prodigy.Skin.call(this, ["tileset-town-october", "event-starlight_festival", "npc-sprite-" + this.shopkeeperTag], ["lamplight-A2", "lamplight-A3", "lamplight-A4", "lamplight-B0", "lamplight-B1", "lamplight-B2", "lamplight-B3", "lamplight-B4", "lamplight-B5", "lamplight-C2", "lamplight-C3", "lamplight-C4"]), this._store = {
+		name: "NOVEMBER SHOP",
 		isEvent: !0,
 		pages: [{
+			btn: {
+				icon: "hat/5",
+				bot: "Hats"
+			},
+			items: [{
+				ID: 53,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 10
+				}
+			}, {
+				ID: 50,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 20
+				}
+			}, {
+				ID: 51,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 1
+				}
+			}, {
+				ID: 48,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 25
+				}
+			}, {
+				ID: 52,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 10
+				}
+			}, {
+				ID: 49,
+				type: "hat",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 15
+				}
+			}]
+		}, {
+			btn: {
+				icon: "outfit/1",
+				bot: "Outfits"
+			},
+			items: [{
+				ID: 44,
+				type: "outfit",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 20
+				}
+			}, {
+				ID: 46,
+				type: "outfit",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 15
+				}
+			}, {
+				ID: 45,
+				type: "outfit",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 20
+				}
+			}]
+		}, {
+			btn: {
+				icon: "weapon/1",
+				bot: "Wands"
+			},
+			items: [{
+				ID: 72,
+				type: "weapon",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 5
+				}
+			}, {
+				ID: 71,
+				type: "weapon",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 5
+				}
+			}]
+		}, {
 			btn: {
 				icon: "catalogue",
 				bot: "House"
 			},
 			items: [{
-				ID: 85,
+				ID: 79,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 1
 				}
 			}, {
-				ID: 86,
+				ID: 78,
 				type: "dorm",
 				cost: {
-					ID: 4,
-					type: "currency",
-					N: 10
-				}
-			}, {
-				ID: 87,
-				type: "dorm",
-				cost: {
-					ID: 4,
-					type: "currency",
-					N: 10
-				}
-			}, {
-				ID: 88,
-				type: "dorm",
-				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 5
 				}
 			}, {
-				ID: 89,
+				ID: 75,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 5
 				}
 			}, {
-				ID: 90,
+				ID: 77,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 1
 				}
 			}, {
-				ID: 91,
+				ID: 76,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 10
 				}
 			}, {
-				ID: 92,
+				ID: 72,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 15
 				}
 			}, {
-				ID: 93,
+				ID: 80,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 10
 				}
 			}, {
-				ID: 94,
+				ID: 84,
 				type: "dorm",
 				cost: {
-					ID: 4,
-					type: "currency",
-					N: 1
-				}
-			}, {
-				ID: 95,
-				type: "dorm",
-				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 10
 				}
 			}, {
-				ID: 96,
+				ID: 74,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
 					type: "currency",
 					N: 5
 				}
 			}, {
-				ID: 97,
+				ID: 73,
 				type: "dorm",
 				cost: {
-					ID: 4,
+					ID: 2,
+					type: "currency",
+					N: 1
+				}
+			}, {
+				ID: 81,
+				type: "dorm",
+				cost: {
+					ID: 2,
 					type: "currency",
 					N: 10
+				}
+			}, {
+				ID: 83,
+				type: "dorm",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 5
+				}
+			}, {
+				ID: 82,
+				type: "dorm",
+				cost: {
+					ID: 2,
+					type: "currency",
+					N: 15
 				}
 			}]
 		}]
@@ -58200,7 +58314,7 @@ Prodigy.Skin = function(e, t) {
 	},
 	signOnInputDown: function (e) {
 		var t = e.prodigy.player.data[this.daily];
-		Util.isDefined(t) && 1 === t.isComplete && 1 !== e.prodigy.player.eventSignClicked && 1 !== t.signClickedAndDailyCompleted && (e.prodigy.network.sendAnalytics("Sign-Clicked-And-Daily-Completed"), t.signClickedAndDailyCompleted = 1), e.prodigy.player.eventSignClicked = 1, e.prodigy.open.message("Every day during the Starlight Festival, a hand falls somewhere into Lamplight Town. You must find it and protect it, before the Puppet Master's evil forces capture it!\n\nIf you do, you'll collect a bunch of Star Shards!", null, "star-shard-small", "Event Daily Task")
+		Util.isDefined(t) && 1 === t.isComplete && 1 !== e.prodigy.player.eventSignClicked && 1 !== t.signClickedAndDailyCompleted && (e.prodigy.network.sendAnalytics("Sign-Clicked-And-Daily-Completed"), t.signClickedAndDailyCompleted = 1), e.prodigy.player.eventSignClicked = 1, e.prodigy.open.message("Idk what to say, why is Mama Star a.k.a Not Mama Star here? Well stitch head got broken so we have to add Not Mama Star a.k.a Mama Star since she isn't broken for now.", null, "star-shard-small", "Event Daily Task")
 	},
 	talkToShopkeeper: function (e) {
 		var t = e.prodigy.event.create();
@@ -58406,28 +58520,6 @@ Prodigy.Skin = function(e, t) {
 					ID: 5,
 					type: "currency",
 					N: 30
-				}
-			}]
-		}, {
-			btn: {
-				icon: "item/76",
-				bot: "Items"
-			},
-			items: [{
-				ID: 76,
-				type: "item",
-				cost: {
-					ID: 5,
-					type: "currency",
-					N: 1
-				}
-			}, {
-				ID: 77,
-				type: "item",
-				cost: {
-					ID: 5,
-					type: "currency",
-					N: 2
 				}
 			}]
 		}, {
@@ -58857,10 +58949,10 @@ Prodigy.Skin = function(e, t) {
 		this._count++, this._count > 180 && (this.randomizePosition.call(this), this._count = 0)
 	}
 }), Prodigy.SkinFactory = function(e) {
-	this.game = e, this.active = [new Prodigy.Pumpkinfest, new Prodigy.MagicParticle, new Prodigy.MagicParticle2]
+	this.game = e, this.active = [new Prodigy.Winterfest, new Prodigy.MagicParticle, new Prodigy.MagicParticle2]
 }, Prodigy.SkinFactory.prototype = {
 	constructor: Prodigy.SkinFactory,
-  active: [new Prodigy.MagicParticle, new Prodigy.MagicParticle2],
+  active: [new Prodigy.Winterfest, new Prodigy.MagicParticle, new Prodigy.MagicParticle2],
 	activeStore: function() {
 		for (var e = 0; e < this.active.length; e++) {
 			var t = this.active[e].getStoreData();
@@ -67340,8 +67432,8 @@ Academy.AUDIO = [{
 		}, {
 			ID: 36
 		}]
-	}, this.util = new Prodigy.LamplightUtil(e, this), this.name = "Lamplight", this.ID = "lamplight", this.game = e, this.bgm = "bgm-lamplight", this.minLevel = 1, this.maxLevel = 4, this.battleBG = "bg-battle-arena", this.onFaint = "lamplight-B3", "npc-face-winterfest", this.questHub = "lamplight-B3", this.states = ["event", "1stpresent", "bounty", "daily", "firstPotion"];
-	var t = ["tileset-springfest", "tileset-generic-new", "tileset-town-new", "tileset-forest-new", "tileset-collisions", "npc-sprite-gnome", "zone-lamplight", "bgm-lamplight", "sfx-lamplight", "npc-face-winterfest"];
+	}, this.util = new Prodigy.LamplightUtil(e, this), this.name = "Lamplight", this.ID = "lamplight", this.game = e, this.bgm = "bgm-pumpkinfest", this.minLevel = 1, this.maxLevel = 4, this.battleBG = "bg-battle-arena", this.onFaint = "lamplight-B3", "npc-face-winterfest", this.questHub = "lamplight-B3", this.states = ["event", "1stpresent", "bounty", "daily", "firstPotion"];
+	var t = ["tileset-springfest", "tileset-generic-new", "tileset-town-new", "tileset-forest-new", "tileset-collisions", "npc-sprite-gnome", "zone-lamplight", "bgm-pumpkinfest", "sfx-lamplight", "npc-face-winterfest"];
 	this.maps = {
 		A2: new Prodigy.Lamplight_A2(this, t),
 		A3: new Prodigy.Lamplight_A3(this, t),
@@ -68728,14 +68820,14 @@ Academy.AUDIO = [{
 		}))
 	}
 }), Prodigy.Lamplight_Boss = function(e, t) {
-	Prodigy.Scene.call(this, e, "B1", t.concat(["npc-sprite-noot", "bgm-lamplight"])), this._loadingData.time = 1
+	Prodigy.Scene.call(this, e, "B1", t.concat(["npc-sprite-noot", "bgm-pumpkinfest"])), this._loadingData.time = 1
 }, Prodigy.extends(Prodigy.Lamplight_Boss, Prodigy.Scene, {
 	constructor: Prodigy.Lamplight_Boss,
 	setup: function(e, t, i) {
 		Prodigy.Scene.prototype.setup.call(this, e, t, i), t.user.x = 160, t.user.y = 0, this._noot = this.addNPC(e, t, 160, 0, "npc-sprite-noot"), this._noot.float(!0)
 	},
 	start: function(e, t) {
-		Prodigy.Scene.prototype.start.call(this, e, t, "bgm-lamplight");
+		Prodigy.Scene.prototype.start.call(this, e, t, "bgm-pumpkinfest");
 		var i = e.prodigy.event.create();
 		i.enableInput(!1), i.function(this.enterScene.bind(this, e, t)), i.delay(1e3), i.path(t.user, [{
 			x: 540,
@@ -71865,7 +71957,7 @@ var Forest = function () {
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3]], this.startX = 890, this.startY = 260, this.bgm = "bgm-intro"
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3]], this.startX = 890, this.startY = 260, this.bgm = "bgm-firefly-forest"
 	}
 	return e.prototype = Object.create(WalkableScreen.prototype), e.prototype.create = function () {
 		WalkableScreen.prototype.create.call(this, "forest-0");
@@ -86131,7 +86223,7 @@ Prodigy.NetworkHandlers.NetworkHandler = function(e) {
 	}
 });
 /*
-	You're welcome, Ao28th28 ;)
+	You're welcome, Fun with SC ;)
 			
 	DABOSS WAS HERE ༼ つ ◕◡◕ ༽つ 
 			
