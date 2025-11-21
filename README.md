@@ -3,6 +3,6 @@ This can be used for the Old Prodigy (vanilla, definitive, and ultimate editions
 
 Old Prodigy is for historical purposes.
 
-# Update on multiplayer for pde1500
+# Update on real multiplayer mode for pde1500
 
-I made connecting to a world possible again.
+If daboss7173 can help us, its a miracle, if not then we have to cancel multiplayer for good :(
