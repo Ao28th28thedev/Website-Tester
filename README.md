@@ -5,4 +5,4 @@ Old Prodigy is for historical purposes.
 
 # Update on real multiplayer mode for pde1500
 
-Aw man, Daboss7173 still won't help us with Multiplayer Mode. :(
+It's coming soon, but ask someone else, not Daboss7173.
