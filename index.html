@@ -6,6 +6,19 @@
   <title>Old Prodigy/Prodidows Insider Program</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* Custom Fonts (assuming these are available or fall back gracefully) */
+    @font-face {
+      font-family: "BrianneTod";
+      src: local("BrianneTod"), url("path-to-brianne-tod.woff") format("woff"); /* Replace with actual path */
+      /* Add other font properties as needed */
+    }
+
+    @font-face {
+      font-family: "Pipe Dream";
+      src: local("Pipe Dream"), url("path-to-pipe-dream.woff") format("woff"); /* Replace with actual path */
+      /* Add other font properties as needed */
+    }
+
     body {
       font-family: "BrianneTod", "Pipe Dream", Arial, sans-serif;
       margin: 0;
@@ -19,6 +32,11 @@
       color: #fff;
       padding: 20px 0;
       text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5em; /* Make the title stand out a bit more */
+        margin-bottom: 5px;
     }
 
     nav {
@@ -39,6 +57,7 @@
       border: none;
       cursor: pointer;
       font-size: 1rem;
+      transition: background-color 0.3s ease;
     }
 
     nav a:hover,
@@ -55,9 +74,14 @@
       display: none;
       position: absolute;
       background-color: #0066cc;
-      min-width: 160px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1;
+      min-width: 180px; /* Slightly wider for longer version names */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Darker shadow */
+      z-index: 10; /* Ensure dropdown is on top */
+      left: 50%;
+      transform: translateX(-50%); /* Center the dropdown under the button */
+      border-radius: 5px;
+      overflow: hidden; /* For clean rounded corners */
+      padding: 5px 0; /* Internal padding */
     }
 
     .dropdown-content a {
@@ -65,6 +89,7 @@
       padding: 10px 15px;
       display: block;
       text-decoration: none;
+      white-space: nowrap; /* Prevent version names from wrapping */
     }
 
     .dropdown-content a:hover {
@@ -84,32 +109,80 @@
 
     section {
       margin-bottom: 40px;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
       color: #0066cc;
       margin-bottom: 15px;
+      border-bottom: 2px solid #0066cc;
+      padding-bottom: 5px;
+      display: inline-block;
+    }
+
+    .icon-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .feature-item {
+        flex-basis: 30%; /* Approx 3 items per row */
+        min-width: 200px;
+        margin: 10px 0;
     }
 
     .icon {
       font-size: 50px;
       color: #0066cc;
       margin: 10px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-item:hover .icon {
+        transform: scale(1.1);
     }
 
     .cta-button {
       display: inline-block;
-      background-color: #0066cc;
-      color: #fff;
-      padding: 10px 20px;
+      background-color: #ff9900; /* Distinct color for main CTA */
+      color: #333;
+      padding: 12px 25px;
       border-radius: 5px;
       text-decoration: none;
       margin: 10px;
-      transition: background-color 0.3s ease;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
     }
 
     .cta-button:hover {
-      background-color: #004d99;
+      background-color: #cc7a00;
+      transform: translateY(-2px);
+    }
+
+    .secondary-button {
+        display: inline-block;
+        background-color: #0066cc; /* Blue for the secondary button */
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin: 10px;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .secondary-button:hover {
+        background-color: #004d99;
     }
 
     footer {
@@ -123,10 +196,12 @@
     footer a {
       color: #fff;
       text-decoration: none;
+      transition: color 0.3s ease;
     }
 
     footer a:hover {
       text-decoration: underline;
+      color: #ff9900; /* Hover color for footer links */
     }
   </style>
 </head>
@@ -134,6 +209,7 @@
 
   <header>
     <h1>Welcome to the Old Prodigy/Prodidows Insider Program</h1>
+    <p>Your portal to early access builds and exclusive tests.</p>
     <nav>
       <a href="index.html">Home</a>
       <div class="dropdown">
@@ -147,9 +223,9 @@
           <a href="pde2019/index.html">PDE2019</a>
           <a href="pde1700/index.html?mods=WalkSpeed,FastGameSpeed,ImitationTitan">PDE1700</a>
           <a href="prodigyde/index.html?mods=WalkSpeed,FastGameSpeed">ProdigyDE</a>
-          <a href="pde2015/index.html?mods=WalkSpeed,FastGameSpeed">PDE2015</a
-          <a href="pde2016/index.html?mods=WalkSpeed,FastGameSpeed">PDE2016</a>     
-          <a href="1-18-2/index.html?mods=WalkSpeed,FastGameSpeed">PDE1812</a>   
+          <a href="pde2015/index.html?mods=WalkSpeed,FastGameSpeed">PDE2015</a>
+          <a href="pde2016/index.html?mods=WalkSpeed,FastGameSpeed">PDE2016</a>
+          <a href="1-18-2/index.html?mods=WalkSpeed,FastGameSpeed">PDE1812</a>
           <a href="oldprodigyde/index.html?mods=FastGameSpeed">Old Prodigy DE</a>
         </div>
       </div>
@@ -166,26 +242,45 @@
 
     <section>
       <h2>Why Join?</h2>
-      <div>
-        <div class="icon">🎮</div>
-        <p>Get early access to upcoming features and game modes.</p>
-      </div>
-      <div>
-        <div class="icon">🔧</div>
-        <p>Be part of the testing team and help improve the game with feedback.</p>
-      </div>
-      <div>
-        <div class="icon">💾</div>
-        <p>Save your character progress and enjoy continuous updates. (Coming soon!)</p>
+      <div class="icon-container">
+        <div class="feature-item">
+            <div class="icon">🎮</div>
+            <p>Get **early access** to upcoming features and game modes.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🔧</div>
+            <p>Be part of the **testing team** and help improve the game with feedback.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">💾</div>
+            <p>Save your character progress and enjoy **continuous updates**. (Coming soon!)</p>
+        </div>
       </div>
     </section>
 
     <section>
       <h2>Get Started</h2>
-<section>
-  <h2>Feeling Lucky?</h2>
-  <button class="cta-button" onclick="pickRandomVersion()">Pick For Me</button>
-</section>
+      <p>Ready to jump into the latest Insider builds? Select a version below or let us pick one for you!</p>
+      <a href="#versions-dropdown-anchor" class="secondary-button">See All Versions</a>
+    </section>
+
+    <section>
+      <h2>Feeling Lucky?</h2>
+      <p>Click the button below to randomly jump into one of our active Insider builds.</p>
+      <button class="cta-button" onclick="pickRandomVersion()">Pick A Version For Me</button>
+    </section>
+
+    <section>
+        <h2>Go Back</h2>
+        <a href="https://ao28th28thedev.github.io/Ao28th28thedev/" class="secondary-button">Go back to homepage</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Old Prodigy/Prodidows Insider Program | <a href="contact.html">Contact Us</a></p>
+    <p>Note: This is an unreleased testing environment.</p>
+  </footer>
 
 <script>
   function pickRandomVersion() {
@@ -201,13 +296,17 @@
     const random = versions[Math.floor(Math.random() * versions.length)];
     window.location.href = random;
   }
-</script>
-    </section>
-  </main>
 
-  <footer>
-    <p><a href="contact.html">Contact Us</a></p>
-  </footer>
+  // Anchor to help direct users to the dropdown when clicking the 'See All Versions' button
+  document.querySelector('a[href="#versions-dropdown-anchor"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const dropdownButton = document.querySelector('.dropdown .dropbtn');
+    if (dropdownButton) {
+        dropdownButton.focus(); // Focus the button to potentially trigger the dropdown
+        // Optionally add a visual cue that the dropdown is open
+    }
+  });
+</script>
 
 </body>
 </html>
