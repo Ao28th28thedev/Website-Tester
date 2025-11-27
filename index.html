@@ -203,6 +203,61 @@
       text-decoration: underline;
       color: #ff9900; /* Hover color for footer links */
     }
+    
+    /* Modal styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none; /* Hidden by default */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        max-width: 90%;
+        width: 400px;
+        text-align: center;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content h3 {
+        color: #ff9900;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+    }
+
+    .modal-content p {
+        margin-bottom: 20px;
+        color: #555;
+    }
+
+    .modal-close-btn {
+        background-color: #0066cc;
+        color: white;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .modal-close-btn:hover {
+        background-color: #004d99;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -215,6 +270,9 @@
       <div class="dropdown">
         <button class="dropbtn">Versions ▼</button>
         <div class="dropdown-content">
+          <!-- New Version Link with JavaScript function -->
+          <a href="#" onclick="showComingSoon('PDE 1.35.2'); return false;">PDE 1.35.2</a>
+          <!-- Existing Versions -->
           <a href="pde1.51.0/index.html">PDE 1.51.0</a>
           <a href="pde202X/index.html">PDE 202X</a>
           <a href="pde1252/index.html">PDE 1.25.2</a>
@@ -282,6 +340,15 @@
     <p>Note: This is an unreleased testing environment.</p>
   </footer>
 
+  <!-- Custom Modal HTML -->
+  <div id="comingSoonModal" class="modal-overlay">
+      <div class="modal-content">
+          <h3 id="modalVersionTitle"></h3>
+          <p>This version is currently in heavy development and not yet available for Insider testing. Check back soon for updates!</p>
+          <button class="modal-close-btn" onclick="closeComingSoon()">Got It!</button>
+      </div>
+  </div>
+
 <script>
   function pickRandomVersion() {
     const versions = [
@@ -297,6 +364,17 @@
     window.location.href = random;
   }
 
+  // Function to show the custom "Coming Soon" modal
+  function showComingSoon(versionName) {
+      document.getElementById('modalVersionTitle').textContent = versionName + ' - Coming Soon!';
+      document.getElementById('comingSoonModal').style.display = 'flex';
+  }
+
+  // Function to close the custom "Coming Soon" modal
+  function closeComingSoon() {
+      document.getElementById('comingSoonModal').style.display = 'none';
+  }
+
   // Anchor to help direct users to the dropdown when clicking the 'See All Versions' button
   document.querySelector('a[href="#versions-dropdown-anchor"]').addEventListener('click', function(e) {
     e.preventDefault();
@@ -305,6 +383,13 @@
         dropdownButton.focus(); // Focus the button to potentially trigger the dropdown
         // Optionally add a visual cue that the dropdown is open
     }
+  });
+
+  // Close modal when clicking outside of it
+  document.getElementById('comingSoonModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+          closeComingSoon();
+      }
   });
 </script>
 
