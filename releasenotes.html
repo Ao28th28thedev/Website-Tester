@@ -1,47 +1,163 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Release Notes</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insider Program Release Notes</title>
+  <!-- Load Tailwind CSS for responsive, modern styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom Fonts (Defaulting to Inter, consistent with modern web components) */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #f0f4f8; /* Light gray-blue background */
+    }
 
-      .taskbar {
-        background-color: #333;
-        overflow: hidden;
-      }
+    /* Custom styles for the Prodigy theme colors */
+    .prodigy-blue { background-color: #0066cc; }
+    .prodigy-blue-dark { background-color: #004d99; }
+    .prodigy-accent { color: #ff9900; }
+    .prodigy-text { color: #0066cc; }
 
-      .taskbar a {
-        float: left;
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-      }
+    /* Custom hover effect for dropdown buttons */
+    .dropbtn:hover { background-color: #004d99; }
+    .dropdown:hover .dropdown-content { display: block; }
 
-      .taskbar a:hover {
-        background-color: #ddd;
-        color: black;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="taskbar">
-      <a href="https://xpmuser.github.io/Website-Tester/">Homepage</a>
-      <a href="https://xpmuser.github.io/Website-Tester/play.html">Play</a>
-      <a href="https://xpmuser.github.io/Website-Tester/releasenotes.html">Release Notes</a>
+    /* Basic dropdown styling for better integration */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0066cc;
+      min-width: 180px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+
+    .dropdown-content a {
+      color: #fff;
+      padding: 10px 15px;
+      display: block;
+      white-space: nowrap;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #004d99;
+    }
+
+    /* Note Card Styles */
+    .note-card {
+        transition: box-shadow 0.3s ease;
+    }
+    .note-card:hover {
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header class="prodigy-blue text-white shadow-lg">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight">
+        Patch Notes & Release History
+      </h1>
+      <p class="text-xl mt-2 opacity-90">Detailed changes for all Insider versions</p>
     </div>
 
-    <h1>Current version is pde1500!</h1>
+    <!-- Navigation Bar (Mirroring index.html) -->
+    <nav class="prodigy-blue-dark py-2">
+      <div class="flex justify-center flex-wrap gap-4 text-white">
+        <a href="index.html" class="p-2 rounded-md hover:bg-prodigy-blue-dark transition duration-150 ease-in-out">Home</a>
 
-    <p>Whats new in this release: New Options Page: Gender 
-Added skin tone options in the Stylist Shop..</p>
-  </body>
+        <!-- Dropdown Menu -->
+        <div class="dropdown relative">
+          <button class="dropbtn p-2 rounded-md hover:bg-prodigy-blue-dark transition duration-150 ease-in-out">
+            Versions ▼
+          </button>
+          <div class="dropdown-content">
+            <!-- New Version Link with JavaScript function (placeholder for consistent UI) -->
+            <a href="#" onclick="alert('This feature is for internal use only.'); return false;">PDE 1.35.2</a>
+            <!-- List of Versions -->
+            <a href="pde1.51.0/index.html">PDE 1.51.0</a>
+            <a href="pde202X/index.html">PDE 202X</a>
+            <a href="pde1252/index.html">PDE 1.25.2</a>
+            <a href="pde1500/?mods=WalkSpeed,FastGameSpeed,ClassicFaces">PDE1500</a>
+            <a href="pde/index.html">PDE</a>
+            <a href="pde2019/index.html">PDE2019</a>
+            <a href="pde1700/index.html?mods=WalkSpeed,FastGameSpeed,ImitationTitan">PDE1700</a>
+            <a href="prodigyde/index.html?mods=WalkSpeed,FastGameSpeed">ProdigyDE</a>
+            <a href="pde2015/index.html?mods=WalkSpeed,FastGameSpeed">PDE2015</a>
+            <a href="pde2016/index.html?mods=WalkSpeed,FastGameSpeed">PDE2016</a>
+            <a href="1-18-2/index.html?mods=WalkSpeed,FastGameSpeed">PDE1812</a>
+            <a href="oldprodigyde/index.html?mods=FastGameSpeed">Old Prodigy DE</a>
+          </div>
+        </div>
+        <!-- End Dropdown Menu -->
+
+        <a href="mods.html" class="p-2 rounded-md hover:bg-prodigy-blue-dark transition duration-150 ease-in-out">Mods</a>
+        <a href="prodidows.html" class="p-2 rounded-md hover:bg-prodigy-blue-dark transition duration-150 ease-in-out">Prodidows</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold prodigy-text border-b-4 border-prodigy-accent pb-2 inline-block">Latest Patches</h2>
+    </div>
+
+    <div class="note-card bg-white p-6 rounded-xl shadow-lg border border-gray-200 mb-8">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-2xl font-bold text-gray-800">Patch: n/a</h3>
+            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-600">
+                HOTFIX
+            </span>
+        </div>
+        <p class="text-sm text-gray-500 mb-4">
+            Released: ???
+        </p>
+
+        <h4 class="font-semibold text-lg text-green-700 mt-4 mb-2">🚀 New Features</h4>
+        <ul class="list-disc list-inside text-gray-700 ml-4 space-y-1">
+            <li>Coming soon!</li>
+        </ul>
+
+        <h4 class="font-semibold text-lg text-blue-700 mt-4 mb-2">🔧 Bug Fixes</h4>
+        <ul class="list-disc list-inside text-gray-700 ml-4 space-y-1">
+            <liComing soon!</li>
+        </ul>
+    </div>
+
+    <!-- View Archive Button -->
+    <div class="text-center mt-12">
+        <button class="bg-prodigy-accent text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-yellow-500 transition duration-150">
+            View Archived Notes
+        </button>
+    </div>
+
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="mt-auto prodigy-blue-dark text-white py-6">
+    <div class="text-center">
+      <p class="mb-2">
+        <a href="contact.html" class="hover:underline">Contact Us</a> |
+        <a href="https://ao28th28thedev.github.io/Ao28th28thedev/" class="hover:underline">Back to Main Page</a>
+      </p>
+      <p class="text-sm opacity-75">
+        &copy; 2024 Old Prodigy/Prodidows Insider Program. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+</body>
 </html>
