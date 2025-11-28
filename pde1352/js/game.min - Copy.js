@@ -1792,9 +1792,8 @@ Prodigy.extends = function(e, t, i) {
 		},
 		core: {
 			type: "atlas",
-			base: local + "images/",
-			url: "core.png",
-			json: "core.json"
+			key: "general-core",
+			v: "3"
 		},
 		"core-2": {
 			type: "atlas",
