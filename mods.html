@@ -1,106 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Prodidows Insider Mod Menu</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e2f;
-      color: #fff;
-      padding: 20px;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: #2d2d44;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-    select, input[type="checkbox"] {
-      margin-bottom: 10px;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodidows Insider Mod Menu</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the interactive button effect */
+        .shadow-button {
+            transition: all 0.1s ease-out;
+            box-shadow: 0 4px 0 #14532d; /* Darker green shadow */
+            transform: translateY(0);
+        }
+        .shadow-button:active {
+            box-shadow: 0 1px 0 #14532d;
+            transform: translateY(3px);
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Prodidows Insider Mod Menu</h1>
+<body class="bg-gray-900 text-gray-50 min-h-screen flex items-center justify-center p-4" style="font-family: 'Inter', sans-serif;">
+    
+    <div class="container w-full max-w-sm mx-auto bg-gray-800 p-8 rounded-xl shadow-2xl border-t-4 border-emerald-500">
+        
+        <h1 class="text-3xl font-extrabold text-center text-emerald-400 mb-6 tracking-wide">
+            Prodidows Insider Menu
+        </h1>
 
-    <label for="version">Select Game Version:</label>
-    <select id="version">
-      <option value="pde1500">PDE1500</option>
-      <option value="pde2015">PDE2015</option>
-    </select>
+        <!-- Version Selection -->
+        <div class="mb-6">
+            <label for="version" class="block mb-2 text-lg font-medium text-gray-300">Select Game Version:</label>
+            <select id="version" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-200 cursor-pointer">
+                <option value="pde1500">PDE1500</option>
+                <option value="pde2015">PDE2015</option>
+            </select>
+        </div>
 
-    <div id="mod-options">
-      <label><input type="checkbox" value="WalkSpeed"> Walk Speed</label>
-      <label><input type="checkbox" value="FastGameSpeed"> Fast Game Speed</label>
-      <label><input type="checkbox" value="RebalancedBattles"> Rebalanced Battles</label>
-      <label><input type="checkbox" value="ClassicFaces"> Classic Faces</label>
+        <!-- Mod Options -->
+        <div id="mod-options" class="space-y-3 p-4 bg-gray-700/50 rounded-lg border border-gray-700">
+            <!-- Initial Mods (for PDE1500) -->
+            <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                <input type="checkbox" value="WalkSpeed" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                <span>Walk Speed</span>
+            </label>
+            <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                <input type="checkbox" value="FastGameSpeed" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                <span>Fast Game Speed</span>
+            </label>
+            <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                <input type="checkbox" value="RebalancedBattles" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                <span>Rebalanced Battles</span>
+            </label>
+            <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                <input type="checkbox" value="ClassicFaces" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                <span>Classic Faces</span>
+            </label>
+        </div>
+
+        <!-- Launch Button -->
+        <button onclick="launchGame()" class="shadow-button mt-8 w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg rounded-lg uppercase tracking-wider">
+            Go!
+        </button>
     </div>
 
-    <button onclick="launchGame()">Go!</button>
-  </div>
+    <script>
+        const versionSelect = document.getElementById("version");
+        const modOptions = document.getElementById("mod-options");
 
-  <script>
-    const versionSelect = document.getElementById("version");
-    const modOptions = document.getElementById("mod-options");
+        // Function to update the mod list when the version changes
+        versionSelect.addEventListener("change", () => {
+            const version = versionSelect.value;
+            let newModsHTML = '';
 
-    // Update mod list if different versions are added later
-    versionSelect.addEventListener("change", () => {
-      const version = versionSelect.value;
-      if (version === "pde1500") {
-        modOptions.innerHTML = `
-          <label><input type="checkbox" value="WalkSpeed"> Walk Speed</label>
-          <label><input type="checkbox" value="FastGameSpeed"> Fast Game Speed</label>
-          <label><input type="checkbox" value="RebalancedBattles"> Rebalanced Battles</label>
-          <label><input type="checkbox" value="ClassicFaces"> Classic Faces</label>
-        `;
-      } else if (version === "pde2015") {
-        modOptions.innerHTML = `
-          <label><input type="checkbox" value="FutureMod1"> Future Mod 1</label>
-          <label><input type="checkbox" value="FutureMod2"> Future Mod 2</label>
-        `;
-      }
-    });
+            if (version === "pde1500") {
+                newModsHTML = `
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="WalkSpeed" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Walk Speed</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="FastGameSpeed" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Fast Game Speed</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="RebalancedBattles" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Rebalanced Battles</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="ClassicFaces" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Classic Faces</span>
+                    </label>
+                `;
+            } else if (version === "pde2015") {
+                newModsHTML = `
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="FutureMod1" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Future Mod 1</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-gray-200 text-base cursor-pointer">
+                        <input type="checkbox" value="FutureMod2" class="h-5 w-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500"> 
+                        <span>Future Mod 2</span>
+                    </label>
+                `;
+            }
+            modOptions.innerHTML = newModsHTML;
+        });
 
-    function launchGame() {
-      const version = versionSelect.value;
-      const checkboxes = modOptions.querySelectorAll("input[type='checkbox']");
-      let mods = [];
+        // Function to launch the game with selected mods
+        function launchGame() {
+            const version = versionSelect.value;
+            const checkboxes = modOptions.querySelectorAll("input[type='checkbox']");
+            let mods = [];
 
-      checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-          mods.push(checkbox.value);
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    mods.push(checkbox.value);
+                }
+            });
+
+            // Construct the URL with the mods query string
+            const modString = mods.length ? `?mods=${mods.join(",")}` : "";
+            const url = `https://healingmunch.github.io/Website-Tester/${version}/${modString}`;
+            
+            // Open the game in a new tab
+            window.open(url, "_blank");
         }
-      });
-
-      const modString = mods.length ? `?mods=${mods.join(",")}` : "";
-      const url = `https://healingmunch.github.io/Website-Tester/${version}/${modString}`;
-      window.open(url, "_blank");
-    }
-  </script>
+    </script>
 </body>
 </html>
