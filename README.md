@@ -6,5 +6,3 @@ Old Prodigy is for historical purposes.
 # Update on real multiplayer mode for pde1500
 
 It's coming soon.
-
-FIRE PRODIGY IS A BITCH FOR BANNING TON!
