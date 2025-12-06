@@ -5,4 +5,4 @@ Old Prodigy is for historical purposes.
 
 # Update on real multiplayer mode for pde1500
 
-It's coming soon, but ask someone else for help for now, daboss7173 if on something like winter break?
+It's coming soon, but ask someone else for help for now, daboss7173 if on something like winter break? NEVER MIND HE IS EVIL AND A TRAITOR TO TON!
