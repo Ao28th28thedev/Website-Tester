@@ -1,5 +1,5 @@
 /*
-	Simple mod interface for Prodigy version 1-11-0
+	Simple mod interface for Prodigy version 1-10-0
 	
 	Installed Mods: 
 		
@@ -148,7 +148,7 @@ class ModHandler {
 	
 	initClassicFaceMod() {
 		var assets = this.game.assets.getAssetMap();
-		assets.heads.base = "https://xpmuser.github.io/oldprodigy/1-10-0/assets/images/";
+		assets.heads.base = "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/1-10-0/assets/images/";
 		
 		PlayerContainer.getAssets = function(e, t, a) {
 			var i = new Array;
@@ -242,7 +242,7 @@ class ModHandler {
 
 	initCoyBlushMod() {
 		var assets = this.game.assets.getAssetMap();
-		assets.heads.base = "https://xpmuser.github.io/oldprodigy/pde1221/assets/images/";
+		assets.heads.base = "https://ao28th28thedev.github.io/Ao28th28thedev/oldprodigy/pde1221/assets/images/";
 		
 		PlayerContainer.getAssets = function(e, t, a) {
 			var i = new Array;
