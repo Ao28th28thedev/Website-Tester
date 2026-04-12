@@ -1,5 +1,5 @@
 # Website-Tester
-This can be used for the Old Prodigy (vanilla, definitive, and ultimate editions) Insider Program/Preview. and the Prodidows Insider Program/Preview.
+This can be used for the Old Prodigy (vanilla, definitive, plus and ultimate editions) Insider Program/Preview. and the Prodidows Insider Program/Preview.
 
 Old Prodigy is for historical purposes.
 
